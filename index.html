@@ -145,15 +145,28 @@
 
     <!-- KPI SUMMARY CARDS -->
     <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-      <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-4 border-l-4 border-l-emerald-500">
-        <p class="text-xs font-medium text-slate-500 uppercase tracking-wider">Eligible Good Payers</p>
+      
+      <!-- KPI 1: ELIGIBLE GOOD PAYERS (CLICKABLE BUTTON) -->
+      <button
+        type="button"
+        onclick="openKpiModal('eligible')"
+        class="text-left bg-white rounded-xl shadow-sm border border-slate-200 hover:border-emerald-400 hover:shadow-md p-4 border-l-4 border-l-emerald-500 transition cursor-pointer group relative"
+        title="Klik untuk melihat breakdown seluruh customer Eligible Good Payers"
+      >
+        <div class="flex items-center justify-between">
+          <p class="text-xs font-medium text-slate-500 uppercase tracking-wider group-hover:text-emerald-700 transition">Eligible Good Payers</p>
+          <span class="inline-flex items-center gap-1 text-[10px] font-semibold text-emerald-700 bg-emerald-50 border border-emerald-200 px-1.5 py-0.5 rounded group-hover:bg-emerald-600 group-hover:text-white transition">
+            Lihat Rincian &rarr;
+          </span>
+        </div>
         <div class="mt-2 flex items-baseline justify-between">
           <h3 class="text-2xl font-extrabold text-slate-900 tabular-nums" id="kpiTotalCustomers">-</h3>
           <span class="text-xs font-medium text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full" id="kpiTotalContracts">- Kontrak</span>
         </div>
-        <p class="text-xs text-slate-400 mt-1.5">Lolos Global MAX OVD &lt; 30 hr &amp; Non-RP</p>
-      </div>
+        <p class="text-xs text-slate-400 mt-1.5">Klik untuk breakdown seluruh customer eligible</p>
+      </button>
 
+      <!-- KPI 2: AF KONTRAK (ELIGIBLE) -->
       <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-4 border-l-4 border-l-blue-500">
         <p class="text-xs font-medium text-slate-500 uppercase tracking-wider">AF Kontrak (Eligible)</p>
         <div class="mt-2">
@@ -162,6 +175,7 @@
         <p class="text-xs text-slate-400 mt-1.5">Total pembiayaan seluruh kontrak eligible</p>
       </div>
 
+      <!-- KPI 3: AF OUTSTANDING (ELIGIBLE) -->
       <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-4 border-l-4 border-l-indigo-500">
         <p class="text-xs font-medium text-slate-500 uppercase tracking-wider">AF Outstanding (Eligible)</p>
         <div class="mt-2 flex items-baseline justify-between gap-2">
@@ -171,14 +185,26 @@
         <p class="text-xs text-slate-400 mt-1.5">Sisa pokok berjalan seluruh kontrak eligible</p>
       </div>
 
-      <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-4 border-l-4 border-l-amber-500">
-        <p class="text-xs font-medium text-slate-500 uppercase tracking-wider">Total Penalty (Eligible)</p>
+      <!-- KPI 4: TOTAL PENALTY (ELIGIBLE - CLICKABLE BUTTON) -->
+      <button
+        type="button"
+        onclick="openKpiModal('penalty')"
+        class="text-left bg-white rounded-xl shadow-sm border border-slate-200 hover:border-amber-400 hover:shadow-md p-4 border-l-4 border-l-amber-500 transition cursor-pointer group relative"
+        title="Klik untuk melihat breakdown customer dengan denda / penalty"
+      >
+        <div class="flex items-center justify-between">
+          <p class="text-xs font-medium text-slate-500 uppercase tracking-wider group-hover:text-amber-700 transition">Total Penalty (Eligible)</p>
+          <span class="inline-flex items-center gap-1 text-[10px] font-semibold text-amber-700 bg-amber-50 border border-amber-200 px-1.5 py-0.5 rounded group-hover:bg-amber-600 group-hover:text-white transition">
+            Lihat Rincian &rarr;
+          </span>
+        </div>
         <div class="mt-2 flex items-baseline justify-between gap-2">
           <h3 class="text-xl sm:text-2xl font-extrabold text-slate-900 tabular-nums" id="kpiEligiblePenalty">-</h3>
           <span class="text-xs font-semibold text-amber-700 bg-amber-50 px-2 py-0.5 rounded-full" id="kpiReadyTopup">- Siap Top-Up</span>
         </div>
-        <p class="text-xs text-slate-400 mt-1.5">Akumulasi PEN_AMT (AM) seluruh eligible</p>
-      </div>
+        <p class="text-xs text-slate-400 mt-1.5">Klik untuk breakdown denda &amp; siap top-up</p>
+      </button>
+
     </section>
 
     <!-- MAIN TABLE: TOP 10 / HASIL PENCARIAN -->
@@ -247,6 +273,90 @@
 
   </main>
 
+  <!-- BREAKDOWN MODAL (ELIGIBLE GOOD PAYERS & TOTAL PENALTY) -->
+  <div id="kpiBreakdownModal" class="hidden fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl shadow-2xl border border-slate-200 w-full max-w-5xl max-h-[88vh] flex flex-col overflow-hidden">
+      
+      <!-- Modal Header -->
+      <div class="px-6 py-4 bg-slate-900 text-white flex items-center justify-between gap-4">
+        <div>
+          <div class="flex items-center gap-2">
+            <h3 id="modalTitle" class="text-base sm:text-lg font-bold">Breakdown Data Customer</h3>
+            <span id="modalBadge" class="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">0 Customer</span>
+          </div>
+          <p id="modalSubtitle" class="text-xs text-slate-400 mt-0.5">Daftar lengkap customer sesuai filter aktif</p>
+        </div>
+        <button
+          type="button"
+          onclick="closeKpiModal()"
+          class="w-8 h-8 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white flex items-center justify-center transition cursor-pointer"
+        >
+          ✕
+        </button>
+      </div>
+
+      <!-- Modal Filter & Search Bar -->
+      <div class="px-6 py-3 bg-slate-50 border-b border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <div class="flex flex-wrap items-center gap-1.5" id="modalModeTabs">
+          <button type="button" id="tabBtnEligible" onclick="switchModalMode('eligible')" class="px-3 py-1.5 rounded-lg text-xs font-semibold transition cursor-pointer">
+            Semua Eligible
+          </button>
+          <button type="button" id="tabBtnPenalty" onclick="switchModalMode('penalty')" class="px-3 py-1.5 rounded-lg text-xs font-semibold transition cursor-pointer">
+            Ada Penalty (&gt; Rp 0)
+          </button>
+          <button type="button" id="tabBtnTopup" onclick="switchModalMode('topup')" class="px-3 py-1.5 rounded-lg text-xs font-semibold transition cursor-pointer">
+            Siap Top-Up (&ge; 70%)
+          </button>
+        </div>
+
+        <div class="relative w-full sm:w-64">
+          <input
+            type="text"
+            id="modalSearchInput"
+            oninput="renderModalTable()"
+            placeholder="Filter nama customer / AO..."
+            class="w-full pl-8 pr-3 py-1.5 text-xs bg-white border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500"
+          />
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 text-slate-400 absolute left-2.5 top-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+          </svg>
+        </div>
+      </div>
+
+      <!-- Modal Table Body -->
+      <div class="flex-1 overflow-auto">
+        <table class="w-full text-left border-collapse">
+          <thead class="sticky top-0 bg-slate-100 border-b border-slate-200 text-[11px] font-bold uppercase tracking-wider text-slate-600 z-10">
+            <tr>
+              <th class="py-3 pl-6 pr-2 w-14 text-center">Rank</th>
+              <th class="py-3 px-3">Nama Customer &amp; AO</th>
+              <th class="py-3 px-3 text-center">Kontrak</th>
+              <th class="py-3 px-3 text-center">Max OVD</th>
+              <th class="py-3 px-3 text-right">AF Kontrak</th>
+              <th class="py-3 px-3 text-right">AF Outstanding</th>
+              <th class="py-3 px-3 text-right">Total Penalty</th>
+              <th class="py-3 pl-3 pr-6 text-center">Tenor</th>
+            </tr>
+          </thead>
+          <tbody id="modalTableBody" class="divide-y divide-slate-200 text-xs"></tbody>
+        </table>
+      </div>
+
+      <!-- Modal Footer -->
+      <div class="px-6 py-3 bg-slate-50 border-t border-slate-200 flex flex-wrap items-center justify-between gap-2 text-xs text-slate-600">
+        <span id="modalFooterSummary">Menampilkan 0 customer</span>
+        <button
+          type="button"
+          onclick="closeKpiModal()"
+          class="px-4 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-white font-semibold transition cursor-pointer"
+        >
+          Tutup
+        </button>
+      </div>
+
+    </div>
+  </div>
+
   <!-- TOAST NOTIFICATION -->
   <div id="toast" class="fixed bottom-5 right-5 bg-slate-900 text-white text-xs font-medium px-4 py-2.5 rounded-lg shadow-lg opacity-0 pointer-events-none transition-opacity duration-300 z-50">
     Ringkasan prospek berhasil disalin!
@@ -259,7 +369,9 @@
     let globalCustomerProfiles = new Map();
     let selectedStatus = 'AC';
     let selectedProduct = 'ALL';
+    let currentFilteredEligibleList = [];
     let displayedCustomers = [];
+    let currentModalMode = 'eligible';
     let chartInstance = null;
 
     function parseCleanNumber(val) {
@@ -268,7 +380,6 @@
       let str = String(val).trim();
       if (str === '-' || str === '') return 0;
 
-      // Deteksi format kurung akuntansi (misal: "(3)" -> -3)
       let isNegative = false;
       if (str.startsWith('(') && str.endsWith(')')) {
         isNegative = true;
@@ -539,7 +650,6 @@
         clearBtn.classList.add('hidden');
       }
 
-      // 1. Ambil kontrak dari customer yang lolos Strict Global Screening & sesuai filter Status/Produk
       const eligibleFilteredContracts = rawRecords.filter(r => {
         const globalProfile = globalCustomerProfiles.get(r.customerKey);
         if (!globalProfile || !globalProfile.isGloballyEligible) return false;
@@ -549,7 +659,6 @@
         return matchStatus && matchProduct;
       });
 
-      // 2. Agregasi seluruh customer eligible pada filter aktif
       const customerMap = new Map();
 
       eligibleFilteredContracts.forEach(c => {
@@ -584,7 +693,6 @@
         }
       });
 
-      // 3. Urutkan seluruh customer eligible untuk mendapatkan Peringkat Global (#1 s.d. #N)
       const allSortedEligible = Array.from(customerMap.values()).sort((a, b) => {
         if (a.globalMaxOvd !== b.globalMaxOvd) {
           return a.globalMaxOvd - b.globalMaxOvd;
@@ -597,9 +705,13 @@
 
       allSortedEligible.forEach((cust, i) => {
         cust.actualRank = i + 1;
+        cust.avgProgressPct = cust.validTenorCount > 0
+          ? Math.round((cust.sumProgressRatio / cust.validTenorCount) * 100)
+          : 0;
       });
 
-      // 4. Filter pencarian (jika searchQuery diisi, cari di SELURUH peringkat eligible; jika kosong, ambil Top 10)
+      currentFilteredEligibleList = allSortedEligible;
+
       const mainTitleEl = document.getElementById('tableMainTitle');
       const chartTitleEl = document.getElementById('chartTitle');
 
@@ -634,10 +746,7 @@
         ? Math.max(0, Math.round(((eligibleAfKontrak - eligibleAfOut) / eligibleAfKontrak) * 100))
         : 0;
 
-      const readyTopupCount = targetList.filter(c => {
-        const avgPct = c.validTenorCount > 0 ? (c.sumProgressRatio / c.validTenorCount) * 100 : 0;
-        return avgPct >= 70;
-      }).length;
+      const readyTopupCount = targetList.filter(c => c.avgProgressPct >= 70).length;
 
       document.getElementById('kpiTotalCustomers').textContent = totalCust.toLocaleString('id-ID');
       document.getElementById('kpiTotalContracts').textContent = `${totalContracts.toLocaleString('id-ID')} Kontrak`;
@@ -646,6 +755,144 @@
       document.getElementById('kpiRunoffPct').textContent = `Lunas ${paidPrincipalPct}%`;
       document.getElementById('kpiEligiblePenalty').textContent = formatCompactIDR(eligiblePenalty);
       document.getElementById('kpiReadyTopup').textContent = `${readyTopupCount} Siap Top-Up`;
+    }
+
+    // ==========================================
+    // MODAL BREAKDOWN KPI (ELIGIBLE & PENALTY)
+    // ==========================================
+    function openKpiModal(mode) {
+      if (currentFilteredEligibleList.length === 0) return;
+      currentModalMode = mode;
+      document.getElementById('modalSearchInput').value = '';
+      document.getElementById('kpiBreakdownModal').classList.remove('hidden');
+      document.body.style.overflow = 'hidden';
+      updateModalTabsUI();
+      renderModalTable();
+    }
+
+    function closeKpiModal() {
+      document.getElementById('kpiBreakdownModal').classList.add('hidden');
+      document.body.style.overflow = '';
+    }
+
+    function switchModalMode(mode) {
+      currentModalMode = mode;
+      updateModalTabsUI();
+      renderModalTable();
+    }
+
+    function updateModalTabsUI() {
+      const tabEligible = document.getElementById('tabBtnEligible');
+      const tabPenalty = document.getElementById('tabBtnPenalty');
+      const tabTopup = document.getElementById('tabBtnTopup');
+
+      const activeClass = 'px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-900 text-white shadow-2xs cursor-default';
+      const inactiveClass = 'px-3 py-1.5 rounded-lg text-xs font-medium bg-white border border-slate-300 text-slate-600 hover:bg-slate-100 transition cursor-pointer';
+
+      tabEligible.className = currentModalMode === 'eligible' ? activeClass : inactiveClass;
+      tabPenalty.className = currentModalMode === 'penalty' ? activeClass : inactiveClass;
+      tabTopup.className = currentModalMode === 'topup' ? activeClass : inactiveClass;
+    }
+
+    function renderModalTable() {
+      const query = document.getElementById('modalSearchInput').value.trim().toLowerCase();
+      const titleEl = document.getElementById('modalTitle');
+      const subtitleEl = document.getElementById('modalSubtitle');
+      const badgeEl = document.getElementById('modalBadge');
+      const tbody = document.getElementById('modalTableBody');
+      const footerEl = document.getElementById('modalFooterSummary');
+
+      let baseList = [...currentFilteredEligibleList];
+
+      if (currentModalMode === 'penalty') {
+        baseList = baseList.filter(c => c.totalPenalty > 0).sort((a, b) => b.totalPenalty - a.totalPenalty);
+        titleEl.textContent = 'Breakdown Customer dengan Penalty (PEN_AMT)';
+        subtitleEl.textContent = 'Diurutkan dari nilai akumulasi penalty terbesar ke terkecil pada filter aktif';
+      } else if (currentModalMode === 'topup') {
+        baseList = baseList.filter(c => c.avgProgressPct >= 70).sort((a, b) => b.avgProgressPct - a.avgProgressPct);
+        titleEl.textContent = 'Breakdown Customer Siap Top-Up (Tenor ≥ 70%)';
+        subtitleEl.textContent = 'Customer Good Payer dengan progres cicilan rata-rata minimal 70%';
+      } else {
+        titleEl.textContent = 'Breakdown Seluruh Eligible Good Payers';
+        subtitleEl.textContent = `Filter Aktif: Status ${selectedStatus} • Produk ${selectedProduct === 'ALL' ? 'Semua Produk' : selectedProduct}`;
+      }
+
+      const filtered = baseList.filter(cust => {
+        if (!query) return true;
+        const inName = cust.customerName.toLowerCase().includes(query);
+        const inMkt = Array.from(cust.marketings).some(m => m.toLowerCase().includes(query));
+        return inName || inMkt;
+      });
+
+      badgeEl.textContent = `${filtered.length} Customer`;
+      tbody.innerHTML = '';
+
+      if (filtered.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="8" class="py-10 text-center text-slate-500">
+              Tidak ada data customer yang cocok pada kategori ini.
+            </td>
+          </tr>
+        `;
+        footerEl.textContent = 'Menampilkan 0 customer';
+        return;
+      }
+
+      const totalModalPenalty = filtered.reduce((acc, c) => acc + c.totalPenalty, 0);
+      const totalModalAfOut = filtered.reduce((acc, c) => acc + c.totalAfOut, 0);
+
+      filtered.forEach(cust => {
+        const marketingList = Array.from(cust.marketings).join(', ') || '-';
+        const tr = document.createElement('tr');
+        tr.className = 'hover:bg-emerald-50/50 transition cursor-pointer';
+        tr.title = 'Klik untuk mencari & membuka detail kontrak customer ini di tabel utama';
+        tr.onclick = () => selectCustomerFromModal(cust.customerName);
+
+        tr.innerHTML = `
+          <td class="py-3 pl-6 pr-2 text-center font-bold text-slate-700 tabular-nums">
+            #${cust.actualRank}
+          </td>
+          <td class="py-3 px-3">
+            <div class="font-bold text-slate-900 hover:text-emerald-700">${escapeHtml(cust.customerName)}</div>
+            <div class="text-[11px] text-slate-500">AO: ${escapeHtml(marketingList)}</div>
+          </td>
+          <td class="py-3 px-3 text-center font-semibold text-slate-700 tabular-nums">
+            ${cust.contracts.length} Unit
+          </td>
+          <td class="py-3 px-3 text-center tabular-nums">
+            <span class="px-2 py-0.5 rounded-full text-[11px] font-bold ${cust.globalMaxOvd === 0 ? 'bg-emerald-100 text-emerald-800' : 'bg-sky-100 text-sky-800'}">
+              ${cust.globalMaxOvd} hr
+            </span>
+          </td>
+          <td class="py-3 px-3 text-right font-medium text-slate-800 tabular-nums whitespace-nowrap">
+            ${formatIDR(cust.totalAfKontrak)}
+          </td>
+          <td class="py-3 px-3 text-right font-semibold text-indigo-700 tabular-nums whitespace-nowrap">
+            ${formatIDR(cust.totalAfOut)}
+          </td>
+          <td class="py-3 px-3 text-right font-bold ${cust.totalPenalty > 0 ? 'text-amber-700' : 'text-slate-400'} tabular-nums whitespace-nowrap">
+            ${formatIDR(cust.totalPenalty)}
+          </td>
+          <td class="py-3 pl-3 pr-6 text-center font-semibold text-slate-700 tabular-nums">
+            ${cust.avgProgressPct}%
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+
+      footerEl.textContent = `Menampilkan ${filtered.length} customer • Total AF Out: ${formatCompactIDR(totalModalAfOut)} • Total Penalty: ${formatIDR(totalModalPenalty)}`;
+    }
+
+    function selectCustomerFromModal(customerName) {
+      closeKpiModal();
+      const searchInput = document.getElementById('searchInput');
+      searchInput.value = customerName;
+      applyFilters();
+      if (displayedCustomers.length > 0) {
+        toggleSubHeader(0);
+      }
+      document.getElementById('tableWrapper').scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
 
     function diagnoseMissingSearch(query) {
@@ -710,9 +957,7 @@
 
       customers.forEach((cust, idx) => {
         const rank = cust.actualRank;
-        const avgProgressPct = cust.validTenorCount > 0
-          ? Math.round((cust.sumProgressRatio / cust.validTenorCount) * 100)
-          : 0;
+        const avgProgressPct = cust.avgProgressPct;
 
         let ovdBadgeClass = 'bg-emerald-100 text-emerald-800 border-emerald-200';
         if (cust.globalMaxOvd >= 15) {
@@ -1039,6 +1284,10 @@
         .replace(/"/g, '&quot;')
         .replace(/'/g, '&#039;');
     }
+
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') closeKpiModal();
+    });
 
     window.addEventListener('DOMContentLoaded', loadSheetData);
   </script>
