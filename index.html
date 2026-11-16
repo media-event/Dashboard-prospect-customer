@@ -21,7 +21,6 @@
     .accordion-content {
       transition: all 0.25s ease-in-out;
     }
-    /* Custom scrollbar */
     ::-webkit-scrollbar {
       width: 6px;
       height: 6px;
@@ -51,8 +50,13 @@
             </svg>
           </span>
           <h1 class="text-lg sm:text-xl font-bold tracking-tight">Prospeksi Good Payers Dashboard</h1>
+          <span class="hidden sm:inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+            Strict Global Screening
+          </span>
         </div>
-        <p class="text-xs text-slate-400 mt-1">Kriteria: <span class="text-emerald-400 font-semibold">MAX OVD &lt; 30 Hari</span> • Urutan: Max OVD Terendah &rarr; Total OVD Terendah &rarr; AF Kontrak Terbesar</p>
+        <p class="text-xs text-slate-400 mt-1">
+          Screening Lintas-Kontrak: <span class="text-emerald-400 font-semibold">Global MAX OVD &lt; 30 Hari &amp; Non-Repo</span> • Urutan: Global Max OVD Terendah &rarr; Global Total OVD &rarr; AF Kontrak Terbesar
+        </p>
       </div>
 
       <div class="flex flex-wrap items-center gap-2.5">
@@ -63,7 +67,7 @@
           <span class="font-semibold text-white" id="cutOffDisplay">Memuat...</span>
         </div>
 
-        <!-- Custom Sheet Tab Input (jika nama tab berganti tanggal) -->
+        <!-- Custom Sheet Tab Input -->
         <div class="flex items-center bg-slate-800 border border-slate-700 rounded-lg overflow-hidden text-xs">
           <input
             type="text"
@@ -87,7 +91,7 @@
   <!-- MAIN CONTAINER -->
   <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
 
-    <!-- ALERT / ERROR BANNER (Hidden by default) -->
+    <!-- ALERT / ERROR BANNER -->
     <div id="errorBanner" class="hidden bg-rose-50 border border-rose-200 text-rose-800 rounded-xl p-4 text-sm flex items-start gap-3">
       <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-rose-500 shrink-0 mt-0.5" viewBox="0 0 20 20" fill="currentColor">
         <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
@@ -105,21 +109,17 @@
         <!-- Filter 1: Contract Status (Kolom AH) -->
         <div class="lg:col-span-5">
           <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-2">
-            Contract Status <span class="text-slate-400 font-normal">(Kolom AH)</span>
+            Contract Status Tampilan <span class="text-slate-400 font-normal">(Kolom AH)</span>
           </label>
-          <div id="statusFilterContainer" class="flex flex-wrap gap-1.5">
-            <!-- Buttons generated dynamically -->
-          </div>
+          <div id="statusFilterContainer" class="flex flex-wrap gap-1.5"></div>
         </div>
 
         <!-- Filter 2: Product Program (Kolom F / OBJ) -->
         <div class="lg:col-span-4">
           <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-2">
-            Product Program <span class="text-slate-400 font-normal">(Kolom F - OBJ)</span>
+            Product Program Tampilan <span class="text-slate-400 font-normal">(Kolom F - OBJ)</span>
           </label>
-          <div id="productFilterContainer" class="flex flex-wrap gap-1.5">
-            <!-- Buttons generated dynamically -->
-          </div>
+          <div id="productFilterContainer" class="flex flex-wrap gap-1.5"></div>
         </div>
 
         <!-- Search Customer / Marketing -->
@@ -153,7 +153,7 @@
           <h3 class="text-2xl font-extrabold text-slate-900 tabular-nums" id="kpiTotalCustomers">-</h3>
           <span class="text-xs font-medium text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full" id="kpiTotalContracts">- Kontrak</span>
         </div>
-        <p class="text-xs text-slate-400 mt-1.5">Customer lolos MAX OVD &lt; 30 hari</p>
+        <p class="text-xs text-slate-400 mt-1.5">Lolos Global MAX OVD &lt; 30 hr &amp; Non-RP</p>
       </div>
 
       <!-- KPI 2: Total AF Kontrak Semua Eligible -->
@@ -190,11 +190,11 @@
     <section class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
       <div class="px-5 py-4 border-b border-slate-200 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 bg-slate-50/70">
         <div>
-          <h2 class="text-base font-bold text-slate-900 flex items-center gap-2">
+          <h2 class="text-base font-bold text-slate-900 flex flex-wrap items-center gap-2">
             <span>Top 10 Customer Pembayaran Terbaik</span>
             <span class="text-xs font-semibold bg-emerald-100 text-emerald-800 px-2.5 py-0.5 rounded-full">Klik Nama Customer untuk Detail Kontrak</span>
           </h2>
-          <p class="text-xs text-slate-500 mt-0.5">Agregasi per customer • Menampilkan Total AF Kontrak (M), AF Outstanding (O), dan Penalty (AM)</p>
+          <p class="text-xs text-slate-500 mt-0.5">Terverifikasi bersih lintas seluruh status kontrak • Menampilkan Total AF Kontrak (M), AF Outstanding (O), dan Penalty (AM)</p>
         </div>
         <div class="flex items-center gap-2">
           <button onclick="expandAllRows(true)" class="text-xs font-medium text-slate-600 hover:text-slate-900 bg-white border border-slate-300 px-2.5 py-1.5 rounded-lg shadow-2xs transition cursor-pointer">
@@ -209,7 +209,7 @@
       <!-- Loading State -->
       <div id="loadingState" class="p-12 text-center">
         <div class="inline-block animate-spin rounded-full h-8 w-8 border-4 border-slate-200 border-t-emerald-600 mb-3"></div>
-        <p class="text-sm font-medium text-slate-600">Menghubungkan & memproses data dari Google Sheet...</p>
+        <p class="text-sm font-medium text-slate-600">Menghubungkan &amp; memproses screening lintas-kontrak dari Google Sheet...</p>
       </div>
 
       <!-- Empty State -->
@@ -225,16 +225,14 @@
             <tr class="bg-slate-100/80 border-b border-slate-200 text-[11px] font-bold uppercase tracking-wider text-slate-600">
               <th class="py-3.5 pl-5 pr-2 w-12 text-center">Rank</th>
               <th class="py-3.5 px-3">Nama Customer</th>
-              <th class="py-3.5 px-3 text-center">Max OVD</th>
+              <th class="py-3.5 px-3 text-center">Global Max OVD</th>
               <th class="py-3.5 px-3 text-right">Total AF Kontrak</th>
               <th class="py-3.5 px-3 text-right">Total AF Outstanding</th>
               <th class="py-3.5 px-3 text-right">Denda / Penalty</th>
               <th class="py-3.5 pl-3 pr-5 text-center w-36">Progress Tenor</th>
             </tr>
           </thead>
-          <tbody id="top10TableBody" class="divide-y divide-slate-200 text-sm">
-            <!-- Rows injected by JS -->
-          </tbody>
+          <tbody id="top10TableBody" class="divide-y divide-slate-200 text-sm"></tbody>
         </table>
       </div>
     </section>
@@ -266,7 +264,8 @@
     const SPREADSHEET_ID = '1VUCL0zZIhNrc6X3bhWJL_hIDrKnhZXJm38DPCM2YHMU';
 
     let rawRecords = [];
-    let selectedStatuses = new Set(['AC']); // Default fokus ke Active (AC)
+    let globalCustomerProfiles = new Map(); // Menyimpan profil historis lintas-status & lintas-produk
+    let selectedStatuses = new Set(['AC']); // Default filter tampilan: Active (AC)
     let selectedProducts = new Set(['ALL']);
     let currentTop10 = [];
     let chartInstance = null;
@@ -312,6 +311,11 @@
       if (num >= 1e9) return 'Rp ' + (num / 1e9).toFixed(2).replace('.', ',') + ' M';
       if (num >= 1e6) return 'Rp ' + (num / 1e6).toFixed(1).replace('.', ',') + ' Jt';
       return 'Rp ' + Math.round(num).toLocaleString('id-ID');
+    }
+
+    // Normalisasi nama customer untuk pengelompokan lintas kontrak yang konsisten
+    function normalizeCustomerKey(name) {
+      return String(name || '').trim().toUpperCase().replace(/\s+/g, ' ');
     }
 
     // ==========================================
@@ -386,6 +390,7 @@
           rawRecords.push({
             noKontrak,
             customerName,
+            customerKey: normalizeCustomerKey(customerName),
             product,
             btm,
             tahunUnit,
@@ -402,6 +407,9 @@
           });
         });
 
+        // TAHAP A: Bangun Profil Historis Lintas-Status & Lintas-Produk
+        buildGlobalCustomerProfiles();
+
         document.getElementById('cutOffDisplay').textContent = latestCutOff || sheetName;
         buildFilterPills();
         applyFilters();
@@ -412,6 +420,41 @@
         errorBanner.classList.remove('hidden');
         document.getElementById('errorMessage').textContent = err.message;
       }
+    }
+
+    // ==========================================
+    // TAHAP A & B: GLOBAL CUSTOMER SCREENING
+    // ==========================================
+    function buildGlobalCustomerProfiles() {
+      globalCustomerProfiles.clear();
+
+      rawRecords.forEach(r => {
+        if (!globalCustomerProfiles.has(r.customerKey)) {
+          globalCustomerProfiles.set(r.customerKey, {
+            displayName: r.customerName,
+            globalMaxOvd: 0,
+            globalTotOvd: 0,
+            totalAllContracts: 0,
+            hasRepoHistory: false
+          });
+        }
+
+        const profile = globalCustomerProfiles.get(r.customerKey);
+        profile.totalAllContracts += 1;
+        if (r.maxOvd > profile.globalMaxOvd) {
+          profile.globalMaxOvd = r.maxOvd;
+        }
+        profile.globalTotOvd += r.totOvd;
+        if (r.status === 'RP') {
+          profile.hasRepoHistory = true;
+        }
+      });
+
+      // Tandai status kelayakan (Hard Gatekeeper):
+      // Lolos HANYA JIKA Global MAX_OVD < 30 hari DAN tidak pernah berstatus RP (Repo)
+      globalCustomerProfiles.forEach(profile => {
+        profile.isGloballyEligible = (profile.globalMaxOvd < 30) && !profile.hasRepoHistory;
+      });
     }
 
     // ==========================================
@@ -515,44 +558,49 @@
     }
 
     // ==========================================
-    // LOGIKA AGREGASI, FILTERING & RANKING TOP 10
+    // PENERAPAN FILTER TAMPILAN & AGREGASI TOP 10
     // ==========================================
     function applyFilters() {
       const searchQuery = document.getElementById('searchInput').value.trim().toLowerCase();
 
-      // Step 1: Filter baris kontrak sesuai Status (AH) dan Product (F)
-      const filteredContracts = rawRecords.filter(r => {
+      // Step 1: Ambil kontrak yang:
+      // (a) Customer-nya LOLOS Strict Global Screening (Global MAX_OVD < 30 & Non-RP)
+      // (b) Kontraknya sesuai dengan Filter Status (AH) & Filter Produk (F) yang sedang dipilih
+      const eligibleFilteredContracts = rawRecords.filter(r => {
+        const globalProfile = globalCustomerProfiles.get(r.customerKey);
+        if (!globalProfile || !globalProfile.isGloballyEligible) return false;
+
         const matchStatus = selectedStatuses.has('ALL') || selectedStatuses.has(r.status);
         const matchProduct = selectedProducts.has('ALL') || selectedProducts.has(r.product);
         return matchStatus && matchProduct;
       });
 
-      // Step 2: Agregasi per Customer (E)
+      // Step 2: Agregasi per Customer untuk kontrak yang tampil
       const customerMap = new Map();
 
-      filteredContracts.forEach(c => {
-        if (!customerMap.has(c.customerName)) {
-          customerMap.set(c.customerName, {
-            customerName: c.customerName,
+      eligibleFilteredContracts.forEach(c => {
+        if (!customerMap.has(c.customerKey)) {
+          const globalProfile = globalCustomerProfiles.get(c.customerKey);
+          customerMap.set(c.customerKey, {
+            customerName: globalProfile.displayName,
+            globalMaxOvd: globalProfile.globalMaxOvd,
+            globalTotOvd: globalProfile.globalTotOvd,
+            totalAllContracts: globalProfile.totalAllContracts,
             contracts: [],
             totalAfKontrak: 0,
             totalAfOut: 0,
             totalPenalty: 0,
-            maxOvdCustomer: 0,
-            totOvdCustomer: 0,
             sumProgressRatio: 0,
             validTenorCount: 0,
             marketings: new Set()
           });
         }
 
-        const cust = customerMap.get(c.customerName);
+        const cust = customerMap.get(c.customerKey);
         cust.contracts.push(c);
         cust.totalAfKontrak += c.afKontrak;
         cust.totalAfOut += c.afOut;
         cust.totalPenalty += c.penAmt;
-        if (c.maxOvd > cust.maxOvdCustomer) cust.maxOvdCustomer = c.maxOvd;
-        cust.totOvdCustomer += c.totOvd;
         if (c.marketing && c.marketing !== '-') cust.marketings.add(c.marketing);
 
         if (c.tenor > 0) {
@@ -562,11 +610,8 @@
         }
       });
 
-      // Step 3: Filter Kriteria Good Payer (MAX_OVD < 30 hari) + Search Input
+      // Step 3: Filter pencarian teks (Nama Customer / Nama Marketing)
       let eligibleCustomers = Array.from(customerMap.values()).filter(cust => {
-        const isGoodPayer = cust.maxOvdCustomer < 30;
-        if (!isGoodPayer) return false;
-
         if (searchQuery) {
           const inName = cust.customerName.toLowerCase().includes(searchQuery);
           const inMkt = Array.from(cust.marketings).some(m => m.toLowerCase().includes(searchQuery));
@@ -575,13 +620,16 @@
         return true;
       });
 
-      // Step 4: Pengurutan Top 10
+      // Step 4: Pengurutan Top 10 berdasarkan Rekam Jejak Global & Eksposur
+      // Prioritas 1: Global MAX_OVD terendah (0 -> 29 hari)
+      // Prioritas 2: Global TOT_OVD terendah
+      // Prioritas 3: Total AF Kontrak terbesar pada filter aktif
       eligibleCustomers.sort((a, b) => {
-        if (a.maxOvdCustomer !== b.maxOvdCustomer) {
-          return a.maxOvdCustomer - b.maxOvdCustomer;
+        if (a.globalMaxOvd !== b.globalMaxOvd) {
+          return a.globalMaxOvd - b.globalMaxOvd;
         }
-        if (a.totOvdCustomer !== b.totOvdCustomer) {
-          return a.totOvdCustomer - b.totOvdCustomer;
+        if (a.globalTotOvd !== b.globalTotOvd) {
+          return a.globalTotOvd - b.globalTotOvd;
         }
         return b.totalAfKontrak - a.totalAfKontrak;
       });
@@ -591,7 +639,7 @@
       // Update KPI Cards menggunakan SELURUH data eligibleCustomers
       updateKPIs(eligibleCustomers);
 
-      // Render Table & Chart untuk Top 10
+      // Render Table & Chart Top 10
       renderTop10Table(currentTop10);
       renderComparisonChart(currentTop10);
     }
@@ -600,17 +648,14 @@
       const totalCust = allEligible.length;
       const totalContracts = allEligible.reduce((acc, c) => acc + c.contracts.length, 0);
 
-      // Akumulasi dari SELURUH kontrak pada data eligible good payers
       const eligibleAfKontrak = allEligible.reduce((acc, c) => acc + c.totalAfKontrak, 0);
       const eligibleAfOut = allEligible.reduce((acc, c) => acc + c.totalAfOut, 0);
       const eligiblePenalty = allEligible.reduce((acc, c) => acc + c.totalPenalty, 0);
 
-      // Persentase pokok yang sudah terbayar pada seluruh portofolio eligible
       const paidPrincipalPct = eligibleAfKontrak > 0
         ? Math.max(0, Math.round(((eligibleAfKontrak - eligibleAfOut) / eligibleAfKontrak) * 100))
         : 0;
 
-      // Jumlah customer eligible yang rata-rata tenornya >= 70% (siap top-up)
       const readyTopupCount = allEligible.filter(c => {
         const avgPct = c.validTenorCount > 0 ? (c.sumProgressRatio / c.validTenorCount) * 100 : 0;
         return avgPct >= 70;
@@ -653,14 +698,15 @@
           : 0;
 
         let ovdBadgeClass = 'bg-emerald-100 text-emerald-800 border-emerald-200';
-        if (cust.maxOvdCustomer >= 15) {
+        if (cust.globalMaxOvd >= 15) {
           ovdBadgeClass = 'bg-amber-100 text-amber-800 border-amber-200';
-        } else if (cust.maxOvdCustomer > 0) {
+        } else if (cust.globalMaxOvd > 0) {
           ovdBadgeClass = 'bg-sky-100 text-sky-800 border-sky-200';
         }
 
         const isHighProspect = avgProgressPct >= 70;
         const marketingList = Array.from(cust.marketings).join(', ') || '-';
+        const hasOtherStatusContracts = cust.totalAllContracts > cust.contracts.length;
 
         // 1. BARIS UTAMA CUSTOMER
         const mainTr = document.createElement('tr');
@@ -684,8 +730,9 @@
                 <div class="font-bold text-slate-900 group-hover:text-emerald-700 transition flex flex-wrap items-center gap-2">
                   <span>${escapeHtml(cust.customerName)}</span>
                   <span class="text-[11px] font-semibold bg-slate-100 text-slate-600 px-2 py-0.5 rounded-md border border-slate-200">
-                    ${cust.contracts.length} Kontrak
+                    ${cust.contracts.length} Kontrak Filter
                   </span>
+                  ${hasOtherStatusContracts ? `<span class="text-[10px] font-medium bg-slate-50 text-slate-500 px-1.5 py-0.5 rounded border border-slate-200" title="Total seluruh kontrak historis customer ini di database">Total Historis: ${cust.totalAllContracts}</span>` : ''}
                   ${isHighProspect ? `<span class="text-[11px] font-semibold bg-emerald-50 text-emerald-700 px-2 py-0.5 rounded-md border border-emerald-200">Siap Top-Up</span>` : ''}
                 </div>
                 <div class="text-xs text-slate-500 mt-0.5">
@@ -695,10 +742,10 @@
             </div>
           </td>
           <td class="py-4 px-3 text-center">
-            <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold border ${ovdBadgeClass} tabular-nums">
-              ${cust.maxOvdCustomer} hari
+            <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold border ${ovdBadgeClass} tabular-nums" title="Max OVD tertinggi dari seluruh riwayat kontrak customer">
+              ${cust.globalMaxOvd} hari
             </span>
-            <div class="text-[11px] text-slate-400 mt-0.5 tabular-nums">Tot: ${cust.totOvdCustomer} hr</div>
+            <div class="text-[11px] text-slate-400 mt-0.5 tabular-nums">Tot Global: ${cust.globalTotOvd} hr</div>
           </td>
           <td class="py-4 px-3 text-right font-semibold text-slate-900 tabular-nums whitespace-nowrap">
             ${formatIDR(cust.totalAfKontrak)}
@@ -755,7 +802,7 @@
                 <div class="w-full bg-slate-200 rounded-full h-1.5 overflow-hidden">
                   <div class="bg-emerald-500 h-1.5 rounded-full" style="width: ${pct}%"></div>
                 </div>
-                <div class="text-[10px] text-slate-500 mt-0.5">Sisa tenor: <strong class="text-slate-700">${sisaTenor} bln</strong> • Max OVD: ${ct.maxOvd} hr</div>
+                <div class="text-[10px] text-slate-500 mt-0.5">Sisa tenor: <strong class="text-slate-700">${sisaTenor} bln</strong> • Max OVD kontrak: ${ct.maxOvd} hr</div>
               </td>
               <td class="py-2.5 px-3 font-medium text-slate-800">
                 ${escapeHtml(ct.marketing)}
@@ -778,8 +825,9 @@
               <div class="bg-slate-800 text-white px-4 py-3 flex flex-wrap items-center justify-between gap-3">
                 <div class="flex flex-wrap items-center gap-4 text-xs">
                   <div>
-                    <span class="text-slate-400">Total Kontrak:</span>
-                    <span class="font-bold text-emerald-400 ml-1">${cust.contracts.length} Unit/Kontrak</span>
+                    <span class="text-slate-400">Kontrak Terfilter:</span>
+                    <span class="font-bold text-emerald-400 ml-1">${cust.contracts.length} Unit</span>
+                    <span class="text-slate-400 ml-1">(dari total ${cust.totalAllContracts} kontrak historis)</span>
                   </div>
                   <span class="text-slate-600">|</span>
                   <div>
@@ -788,8 +836,8 @@
                   </div>
                   <span class="text-slate-600">|</span>
                   <div>
-                    <span class="text-slate-400">Max OVD Historis:</span>
-                    <span class="font-semibold text-emerald-400 ml-1">${cust.maxOvdCustomer} Hari</span>
+                    <span class="text-slate-400">Global Max OVD:</span>
+                    <span class="font-semibold text-emerald-400 ml-1">${cust.globalMaxOvd} Hari (Non-Repo)</span>
                   </div>
                 </div>
 
@@ -811,12 +859,12 @@
                 <table class="w-full text-left border-collapse">
                   <thead>
                     <tr class="bg-slate-100 text-[10px] font-bold uppercase tracking-wider text-slate-600 border-b border-slate-200">
-                      <th class="py-2.5 px-3">No. Kontrak & Status</th>
+                      <th class="py-2.5 px-3">No. Kontrak &amp; Status</th>
                       <th class="py-2.5 px-3">Brand / BTM (Kolom G)</th>
                       <th class="py-2.5 px-3 w-48">Tenor Berjalan (T / V)</th>
                       <th class="py-2.5 px-3">Nama Marketing (AO)</th>
                       <th class="py-2.5 px-3">Nama Supplier (AU)</th>
-                      <th class="py-2.5 px-3 text-right">AF Kontrak & Out</th>
+                      <th class="py-2.5 px-3 text-right">AF Kontrak &amp; Out</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -873,10 +921,10 @@
 
       const marketingList = Array.from(cust.marketings).join(', ') || '-';
       const lines = [
-        `*PROSPEK REPEAT ORDER / TOP-UP (GOOD PAYER)*`,
+        `*PROSPEK REPEAT ORDER / TOP-UP (STRICT GOOD PAYER)*`,
         `Customer: *${cust.customerName}*`,
-        `Total Kontrak: ${cust.contracts.length} Kontrak`,
-        `Max OVD: ${cust.maxOvdCustomer} hari (Total OVD: ${cust.totOvdCustomer} hari)`,
+        `Kontrak Terfilter: ${cust.contracts.length} Unit (Total Historis: ${cust.totalAllContracts} Kontrak)`,
+        `Global Max OVD: ${cust.globalMaxOvd} hari (Total Global OVD: ${cust.globalTotOvd} hari • Non-Repo)`,
         `Total AF Kontrak: ${formatIDR(cust.totalAfKontrak)}`,
         `Total AF Outstanding: ${formatIDR(cust.totalAfOut)}`,
         `Marketing (AO): ${marketingList}`,
