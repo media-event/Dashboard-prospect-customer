@@ -439,10 +439,10 @@
     }
 
     // ==========================================
-    // TOMBOL FILTER SINGLE-SELECT (EKSKLUSIF)
+    // TOMBOL FILTER SINGLE-SELECT (TANPA KETERANGAN DALAM KURUNG)
     // ==========================================
     function buildFilterPills() {
-      // 1. Contract Status (AH) - Hanya 1 tombol yang bisa aktif
+      // 1. Contract Status (AH)
       const statusCounts = {};
       rawRecords.forEach(r => {
         statusCounts[r.status] = (statusCounts[r.status] || 0) + 1;
@@ -452,19 +452,12 @@
         selectedStatus = statusCounts['AC'] ? 'AC' : 'ALL';
       }
 
-      const statusLabels = {
-        'AC': 'AC (Active)',
-        'PT': 'PT (Paid Off)',
-        'CL': 'CL (Close)',
-        'RP': 'RP (Repo)'
-      };
-
       const statusOrder = ['AC', 'PT', 'CL', 'RP', ...Object.keys(statusCounts).filter(k => !['AC', 'PT', 'CL', 'RP'].includes(k))];
       const statusContainer = document.getElementById('statusFilterContainer');
       statusContainer.innerHTML = '';
 
       statusContainer.appendChild(createSingleSelectPill(
-        `Semua (${rawRecords.length})`,
+        'Semua',
         selectedStatus === 'ALL',
         () => {
           if (selectedStatus === 'ALL') return;
@@ -477,16 +470,15 @@
       statusOrder.forEach(st => {
         if (!statusCounts[st]) return;
         const isActive = selectedStatus === st;
-        const label = `${statusLabels[st] || st} (${statusCounts[st]})`;
-        statusContainer.appendChild(createSingleSelectPill(label, isActive, () => {
-          if (selectedStatus === st) return; // Tetap terkunci pada pilihan ini
+        statusContainer.appendChild(createSingleSelectPill(st, isActive, () => {
+          if (selectedStatus === st) return;
           selectedStatus = st;
           buildFilterPills();
           applyFilters();
         }));
       });
 
-      // 2. Product Program (F - OBJ) - Hanya 1 tombol yang bisa aktif
+      // 2. Product Program (F - OBJ)
       const productCounts = {};
       rawRecords.forEach(r => {
         productCounts[r.product] = (productCounts[r.product] || 0) + 1;
@@ -500,7 +492,7 @@
       prodContainer.innerHTML = '';
 
       prodContainer.appendChild(createSingleSelectPill(
-        `Semua Produk`,
+        'Semua Produk',
         selectedProduct === 'ALL',
         () => {
           if (selectedProduct === 'ALL') return;
@@ -512,8 +504,8 @@
 
       Object.keys(productCounts).sort().forEach(prod => {
         const isActive = selectedProduct === prod;
-        prodContainer.appendChild(createSingleSelectPill(`${prod} (${productCounts[prod]})`, isActive, () => {
-          if (selectedProduct === prod) return; // Tetap terkunci pada pilihan ini
+        prodContainer.appendChild(createSingleSelectPill(prod, isActive, () => {
+          if (selectedProduct === prod) return;
           selectedProduct = prod;
           buildFilterPills();
           applyFilters();
@@ -527,9 +519,9 @@
       btn.textContent = text;
       btn.onclick = onClick;
       if (isActive) {
-        btn.className = 'px-3 py-1.5 rounded-lg text-xs font-semibold bg-emerald-600 text-white shadow-2xs ring-2 ring-emerald-600/30 cursor-default';
+        btn.className = 'px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-emerald-600 text-white shadow-2xs ring-2 ring-emerald-600/30 cursor-default';
       } else {
-        btn.className = 'px-3 py-1.5 rounded-lg text-xs font-medium bg-slate-100 text-slate-600 hover:bg-slate-200 hover:text-slate-900 transition cursor-pointer';
+        btn.className = 'px-3.5 py-1.5 rounded-lg text-xs font-medium bg-slate-100 text-slate-600 hover:bg-slate-200 hover:text-slate-900 transition cursor-pointer';
       }
       return btn;
     }
