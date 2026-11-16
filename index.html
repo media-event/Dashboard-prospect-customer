@@ -18,9 +18,6 @@
     .tabular-nums {
       font-variant-numeric: tabular-nums;
     }
-    .accordion-content {
-      transition: all 0.25s ease-in-out;
-    }
     ::-webkit-scrollbar {
       width: 6px;
       height: 6px;
@@ -60,7 +57,6 @@
       </div>
 
       <div class="flex items-center gap-2.5">
-        <!-- Custom Sheet Tab Input -->
         <div class="flex items-center bg-slate-800 border border-slate-700 rounded-lg overflow-hidden text-xs">
           <input
             type="text"
@@ -71,6 +67,7 @@
             title="Ubah nama tab jika tanggal cut-off AR Info berubah"
           />
           <button
+            type="button"
             onclick="loadSheetData()"
             class="bg-emerald-600 hover:bg-emerald-500 text-white font-medium px-3.5 py-2 transition cursor-pointer"
           >
@@ -125,21 +122,29 @@
               type="text"
               id="searchInput"
               oninput="applyFilters()"
-              placeholder="Ketik nama PT / AO..."
-              class="w-full pl-9 pr-3 py-2 text-sm bg-slate-50 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+              placeholder="Ketik nama PT / Aprizal / AO..."
+              class="w-full pl-9 pr-8 py-2 text-sm bg-slate-50 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
             />
             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-slate-400 absolute left-3 top-2.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
             </svg>
+            <button
+              id="clearSearchBtn"
+              type="button"
+              onclick="clearSearch()"
+              class="hidden absolute right-2.5 top-2 text-slate-400 hover:text-slate-700 text-xs font-bold cursor-pointer"
+              title="Hapus pencarian"
+            >
+              ✕
+            </button>
           </div>
         </div>
 
       </div>
     </section>
 
-    <!-- KPI SUMMARY CARDS (SELURUH DATA ELIGIBLE GOOD PAYERS) -->
+    <!-- KPI SUMMARY CARDS -->
     <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-      <!-- KPI 1 -->
       <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-4 border-l-4 border-l-emerald-500">
         <p class="text-xs font-medium text-slate-500 uppercase tracking-wider">Eligible Good Payers</p>
         <div class="mt-2 flex items-baseline justify-between">
@@ -149,7 +154,6 @@
         <p class="text-xs text-slate-400 mt-1.5">Lolos Global MAX OVD &lt; 30 hr &amp; Non-RP</p>
       </div>
 
-      <!-- KPI 2 -->
       <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-4 border-l-4 border-l-blue-500">
         <p class="text-xs font-medium text-slate-500 uppercase tracking-wider">AF Kontrak (Eligible)</p>
         <div class="mt-2">
@@ -158,7 +162,6 @@
         <p class="text-xs text-slate-400 mt-1.5">Total pembiayaan seluruh kontrak eligible</p>
       </div>
 
-      <!-- KPI 3 -->
       <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-4 border-l-4 border-l-indigo-500">
         <p class="text-xs font-medium text-slate-500 uppercase tracking-wider">AF Outstanding (Eligible)</p>
         <div class="mt-2 flex items-baseline justify-between gap-2">
@@ -168,7 +171,6 @@
         <p class="text-xs text-slate-400 mt-1.5">Sisa pokok berjalan seluruh kontrak eligible</p>
       </div>
 
-      <!-- KPI 4 -->
       <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-4 border-l-4 border-l-amber-500">
         <p class="text-xs font-medium text-slate-500 uppercase tracking-wider">Total Penalty (Eligible)</p>
         <div class="mt-2 flex items-baseline justify-between gap-2">
@@ -179,21 +181,21 @@
       </div>
     </section>
 
-    <!-- MAIN TABLE: TOP 10 BEST PAYMENT CUSTOMERS -->
+    <!-- MAIN TABLE: TOP 10 / HASIL PENCARIAN -->
     <section class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
       <div class="px-5 py-4 border-b border-slate-200 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 bg-slate-50/70">
         <div>
           <h2 class="text-base font-bold text-slate-900 flex flex-wrap items-center gap-2">
-            <span>Top 10 Customer Pembayaran Terbaik</span>
+            <span id="tableMainTitle">Top 10 Customer Pembayaran Terbaik</span>
             <span class="text-xs font-semibold bg-emerald-100 text-emerald-800 px-2.5 py-0.5 rounded-full">Klik Nama Customer untuk Detail Kontrak</span>
           </h2>
-          <p class="text-xs text-slate-500 mt-0.5">Terverifikasi bersih lintas seluruh status kontrak • Menampilkan Total AF Kontrak (M), AF Outstanding (O), dan Penalty (AM)</p>
+          <p id="tableSubTitle" class="text-xs text-slate-500 mt-0.5">Terverifikasi bersih lintas seluruh status kontrak • Menampilkan Total AF Kontrak (M), AF Outstanding (O), dan Penalty (AM)</p>
         </div>
         <div class="flex items-center gap-2">
-          <button onclick="expandAllRows(true)" class="text-xs font-medium text-slate-600 hover:text-slate-900 bg-white border border-slate-300 px-2.5 py-1.5 rounded-lg shadow-2xs transition cursor-pointer">
+          <button type="button" onclick="expandAllRows(true)" class="text-xs font-medium text-slate-600 hover:text-slate-900 bg-white border border-slate-300 px-2.5 py-1.5 rounded-lg shadow-2xs transition cursor-pointer">
             Buka Semua
           </button>
-          <button onclick="expandAllRows(false)" class="text-xs font-medium text-slate-600 hover:text-slate-900 bg-white border border-slate-300 px-2.5 py-1.5 rounded-lg shadow-2xs transition cursor-pointer">
+          <button type="button" onclick="expandAllRows(false)" class="text-xs font-medium text-slate-600 hover:text-slate-900 bg-white border border-slate-300 px-2.5 py-1.5 rounded-lg shadow-2xs transition cursor-pointer">
             Tutup Semua
           </button>
         </div>
@@ -205,10 +207,10 @@
         <p class="text-sm font-medium text-slate-600">Menghubungkan &amp; memproses screening lintas-kontrak dari Google Sheet...</p>
       </div>
 
-      <!-- Empty State -->
-      <div id="emptyState" class="hidden p-12 text-center">
-        <p class="text-sm font-semibold text-slate-700">Tidak ada customer yang memenuhi kriteria filter saat ini.</p>
-        <p class="text-xs text-slate-500 mt-1">Coba ubah pilihan Contract Status atau Product Program di atas.</p>
+      <!-- Empty / Diagnostic State -->
+      <div id="emptyState" class="hidden p-10 text-center space-y-2">
+        <p class="text-sm font-bold text-slate-800" id="emptyStateTitle">Tidak ada customer yang memenuhi kriteria filter saat ini.</p>
+        <p class="text-xs text-slate-600 max-w-2xl mx-auto leading-relaxed" id="emptyStateDesc">Coba ubah pilihan Contract Status atau Product Program di atas.</p>
       </div>
 
       <!-- Table Wrapper -->
@@ -216,7 +218,7 @@
         <table class="w-full text-left border-collapse">
           <thead>
             <tr class="bg-slate-100/80 border-b border-slate-200 text-[11px] font-bold uppercase tracking-wider text-slate-600">
-              <th class="py-3.5 pl-5 pr-2 w-12 text-center">Rank</th>
+              <th class="py-3.5 pl-5 pr-2 w-14 text-center">Rank</th>
               <th class="py-3.5 px-3">Nama Customer</th>
               <th class="py-3.5 px-3 text-center">Global Max OVD</th>
               <th class="py-3.5 px-3 text-right">Total AF Kontrak</th>
@@ -230,11 +232,11 @@
       </div>
     </section>
 
-    <!-- VISUAL CHART SECTION: AF KONTRAK VS AF OUTSTANDING TOP 10 -->
+    <!-- VISUAL CHART SECTION -->
     <section id="chartSection" class="hidden bg-white rounded-xl shadow-sm border border-slate-200 p-5">
       <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4">
         <div>
-          <h3 class="text-base font-bold text-slate-900">Perbandingan AF Kontrak vs AF Outstanding (Top 10)</h3>
+          <h3 class="text-base font-bold text-slate-900" id="chartTitle">Perbandingan AF Kontrak vs AF Outstanding (Top 10)</h3>
           <p class="text-xs text-slate-500">Membantu mengidentifikasi ruang limit/plafon yang sudah melunasi pokok untuk potensi repeat order</p>
         </div>
       </div>
@@ -251,26 +253,28 @@
   </div>
 
   <script>
-    // ==========================================
-    // KONFIGURASI GOOGLE SHEET
-    // ==========================================
     const SPREADSHEET_ID = '1VUCL0zZIhNrc6X3bhWJL_hIDrKnhZXJm38DPCM2YHMU';
 
     let rawRecords = [];
     let globalCustomerProfiles = new Map();
-    let selectedStatus = 'AC';   // Single-select eksklusif (default: AC)
-    let selectedProduct = 'ALL'; // Single-select eksklusif (default: ALL)
-    let currentTop10 = [];
+    let selectedStatus = 'AC';
+    let selectedProduct = 'ALL';
+    let displayedCustomers = [];
     let chartInstance = null;
 
-    // ==========================================
-    // HELPER PARSING ANGKA & FORMAT RUPIAH
-    // ==========================================
     function parseCleanNumber(val) {
       if (val === null || val === undefined || val === '' || val === '-') return 0;
       if (typeof val === 'number') return isNaN(val) ? 0 : val;
       let str = String(val).trim();
       if (str === '-' || str === '') return 0;
+
+      // Deteksi format kurung akuntansi (misal: "(3)" -> -3)
+      let isNegative = false;
+      if (str.startsWith('(') && str.endsWith(')')) {
+        isNegative = true;
+        str = str.slice(1, -1).trim();
+      }
+
       if (str.includes('.') && str.includes(',')) {
         str = str.replace(/\./g, '').replace(',', '.');
       } else if ((str.match(/\./g) || []).length > 1) {
@@ -290,7 +294,8 @@
       }
       str = str.replace(/[^0-9.-]/g, '');
       const num = parseFloat(str);
-      return isNaN(num) ? 0 : num;
+      if (isNaN(num)) return 0;
+      return isNegative ? -Math.abs(num) : num;
     }
 
     function formatIDR(num) {
@@ -310,9 +315,6 @@
       return String(name || '').trim().toUpperCase().replace(/\s+/g, ' ');
     }
 
-    // ==========================================
-    // FETCH DATA VIA GOOGLE VISUALIZATION API (GVIZ)
-    // ==========================================
     async function loadSheetData() {
       const sheetName = document.getElementById('sheetNameInput').value.trim();
       const loadingEl = document.getElementById('loadingState');
@@ -367,8 +369,8 @@
           const afOut = parseCleanNumber(getVal(14));
           const instKe = parseCleanNumber(getVal(19));
           const tenor = parseCleanNumber(getVal(21));
-          const maxOvd = parseCleanNumber(getVal(25));
-          const totOvd = parseCleanNumber(getVal(26));
+          const maxOvd = Math.max(0, parseCleanNumber(getVal(25)));
+          const totOvd = Math.max(0, parseCleanNumber(getVal(26)));
           const penAmt = parseCleanNumber(getVal(38));
           const supplier = String(getVal(46)).trim() || '-';
           const marketing = String(getVal(49)).trim() || '-';
@@ -405,9 +407,6 @@
       }
     }
 
-    // ==========================================
-    // STRICT GLOBAL CUSTOMER SCREENING
-    // ==========================================
     function buildGlobalCustomerProfiles() {
       globalCustomerProfiles.clear();
 
@@ -418,7 +417,9 @@
             globalMaxOvd: 0,
             globalTotOvd: 0,
             totalAllContracts: 0,
-            hasRepoHistory: false
+            hasRepoHistory: false,
+            statuses: new Set(),
+            products: new Set()
           });
         }
 
@@ -428,6 +429,8 @@
           profile.globalMaxOvd = r.maxOvd;
         }
         profile.globalTotOvd += r.totOvd;
+        profile.statuses.add(r.status);
+        profile.products.add(r.product);
         if (r.status === 'RP') {
           profile.hasRepoHistory = true;
         }
@@ -438,11 +441,7 @@
       });
     }
 
-    // ==========================================
-    // TOMBOL FILTER SINGLE-SELECT (TANPA KETERANGAN DALAM KURUNG)
-    // ==========================================
     function buildFilterPills() {
-      // 1. Contract Status (AH)
       const statusCounts = {};
       rawRecords.forEach(r => {
         statusCounts[r.status] = (statusCounts[r.status] || 0) + 1;
@@ -478,7 +477,6 @@
         }));
       });
 
-      // 2. Product Program (F - OBJ)
       const productCounts = {};
       rawRecords.forEach(r => {
         productCounts[r.product] = (productCounts[r.product] || 0) + 1;
@@ -526,12 +524,22 @@
       return btn;
     }
 
-    // ==========================================
-    // PENERAPAN FILTER TAMPILAN & AGREGASI TOP 10
-    // ==========================================
-    function applyFilters() {
-      const searchQuery = document.getElementById('searchInput').value.trim().toLowerCase();
+    function clearSearch() {
+      document.getElementById('searchInput').value = '';
+      applyFilters();
+    }
 
+    function applyFilters() {
+      const searchInputEl = document.getElementById('searchInput');
+      const searchQuery = searchInputEl.value.trim().toLowerCase();
+      const clearBtn = document.getElementById('clearSearchBtn');
+      if (searchQuery) {
+        clearBtn.classList.remove('hidden');
+      } else {
+        clearBtn.classList.add('hidden');
+      }
+
+      // 1. Ambil kontrak dari customer yang lolos Strict Global Screening & sesuai filter Status/Produk
       const eligibleFilteredContracts = rawRecords.filter(r => {
         const globalProfile = globalCustomerProfiles.get(r.customerKey);
         if (!globalProfile || !globalProfile.isGloballyEligible) return false;
@@ -541,6 +549,7 @@
         return matchStatus && matchProduct;
       });
 
+      // 2. Agregasi seluruh customer eligible pada filter aktif
       const customerMap = new Map();
 
       eligibleFilteredContracts.forEach(c => {
@@ -575,16 +584,8 @@
         }
       });
 
-      let eligibleCustomers = Array.from(customerMap.values()).filter(cust => {
-        if (searchQuery) {
-          const inName = cust.customerName.toLowerCase().includes(searchQuery);
-          const inMkt = Array.from(cust.marketings).some(m => m.toLowerCase().includes(searchQuery));
-          return inName || inMkt;
-        }
-        return true;
-      });
-
-      eligibleCustomers.sort((a, b) => {
+      // 3. Urutkan seluruh customer eligible untuk mendapatkan Peringkat Global (#1 s.d. #N)
+      const allSortedEligible = Array.from(customerMap.values()).sort((a, b) => {
         if (a.globalMaxOvd !== b.globalMaxOvd) {
           return a.globalMaxOvd - b.globalMaxOvd;
         }
@@ -594,26 +595,46 @@
         return b.totalAfKontrak - a.totalAfKontrak;
       });
 
-      currentTop10 = eligibleCustomers.slice(0, 10);
+      allSortedEligible.forEach((cust, i) => {
+        cust.actualRank = i + 1;
+      });
 
-      updateKPIs(eligibleCustomers);
-      renderTop10Table(currentTop10);
-      renderComparisonChart(currentTop10);
+      // 4. Filter pencarian (jika searchQuery diisi, cari di SELURUH peringkat eligible; jika kosong, ambil Top 10)
+      const mainTitleEl = document.getElementById('tableMainTitle');
+      const chartTitleEl = document.getElementById('chartTitle');
+
+      if (searchQuery) {
+        displayedCustomers = allSortedEligible.filter(cust => {
+          const inName = cust.customerName.toLowerCase().includes(searchQuery);
+          const inMkt = Array.from(cust.marketings).some(m => m.toLowerCase().includes(searchQuery));
+          return inName || inMkt;
+        });
+        mainTitleEl.textContent = `Hasil Pencarian Eligible (${displayedCustomers.length} dari ${allSortedEligible.length} Good Payers)`;
+        chartTitleEl.textContent = `Perbandingan AF Kontrak vs AF Outstanding (Hasil Pencarian)`;
+      } else {
+        displayedCustomers = allSortedEligible.slice(0, 10);
+        mainTitleEl.textContent = 'Top 10 Customer Pembayaran Terbaik';
+        chartTitleEl.textContent = 'Perbandingan AF Kontrak vs AF Outstanding (Top 10)';
+      }
+
+      updateKPIs(searchQuery ? displayedCustomers : allSortedEligible);
+      renderCustomerTable(displayedCustomers, searchQuery);
+      renderComparisonChart(displayedCustomers.slice(0, 10));
     }
 
-    function updateKPIs(allEligible) {
-      const totalCust = allEligible.length;
-      const totalContracts = allEligible.reduce((acc, c) => acc + c.contracts.length, 0);
+    function updateKPIs(targetList) {
+      const totalCust = targetList.length;
+      const totalContracts = targetList.reduce((acc, c) => acc + c.contracts.length, 0);
 
-      const eligibleAfKontrak = allEligible.reduce((acc, c) => acc + c.totalAfKontrak, 0);
-      const eligibleAfOut = allEligible.reduce((acc, c) => acc + c.totalAfOut, 0);
-      const eligiblePenalty = allEligible.reduce((acc, c) => acc + c.totalPenalty, 0);
+      const eligibleAfKontrak = targetList.reduce((acc, c) => acc + c.totalAfKontrak, 0);
+      const eligibleAfOut = targetList.reduce((acc, c) => acc + c.totalAfOut, 0);
+      const eligiblePenalty = targetList.reduce((acc, c) => acc + c.totalPenalty, 0);
 
       const paidPrincipalPct = eligibleAfKontrak > 0
         ? Math.max(0, Math.round(((eligibleAfKontrak - eligibleAfOut) / eligibleAfKontrak) * 100))
         : 0;
 
-      const readyTopupCount = allEligible.filter(c => {
+      const readyTopupCount = targetList.filter(c => {
         const avgPct = c.validTenorCount > 0 ? (c.sumProgressRatio / c.validTenorCount) * 100 : 0;
         return avgPct >= 70;
       }).length;
@@ -627,20 +648,59 @@
       document.getElementById('kpiReadyTopup').textContent = `${readyTopupCount} Siap Top-Up`;
     }
 
-    // ==========================================
-    // RENDER TABEL TOP 10 + SUB-HEADER ACCORDION
-    // ==========================================
-    function renderTop10Table(top10) {
+    function diagnoseMissingSearch(query) {
+      const matches = [];
+      globalCustomerProfiles.forEach(profile => {
+        if (profile.displayName.toLowerCase().includes(query)) {
+          matches.push(profile);
+        }
+      });
+
+      if (matches.length === 0) {
+        return `Nama "${query}" tidak ditemukan sama sekali pada tab "${document.getElementById('sheetNameInput').value}". Pastikan tidak ada Filter aktif pada kolom di Google Sheet atau cek ejaan nama.`;
+      }
+
+      const details = matches.map(m => {
+        const reasons = [];
+        if (m.globalMaxOvd >= 30) {
+          reasons.push(`Global Max OVD = ${m.globalMaxOvd} hari (syarat wajib < 30 hari)`);
+        }
+        if (m.hasRepoHistory) {
+          reasons.push(`memiliki riwayat kontrak berstatus RP (Repo)`);
+        }
+        const statusList = Array.from(m.statuses).join(', ');
+        const prodList = Array.from(m.products).join(', ');
+
+        if (reasons.length > 0) {
+          return `• ${m.displayName} (${m.totalAllContracts} kontrak, Status: ${statusList}, Produk: ${prodList}) → GUGUR Strict Global Screening karena ${reasons.join(' & ')}.`;
+        } else {
+          return `• ${m.displayName} (${m.totalAllContracts} kontrak, Global Max OVD: ${m.globalMaxOvd} hr) → LOLOS kriteria Good Payer, namun tidak tampil karena filter aktif saat ini (${selectedStatus} / ${selectedProduct}) tidak sesuai dengan status kontraknya (${statusList}) atau produknya (${prodList}).`;
+        }
+      });
+
+      return details.join(' ');
+    }
+
+    function renderCustomerTable(customers, searchQuery) {
       const loadingEl = document.getElementById('loadingState');
       const tableWrapper = document.getElementById('tableWrapper');
       const emptyState = document.getElementById('emptyState');
+      const emptyTitle = document.getElementById('emptyStateTitle');
+      const emptyDesc = document.getElementById('emptyStateDesc');
       const tbody = document.getElementById('top10TableBody');
 
       loadingEl.classList.add('hidden');
 
-      if (top10.length === 0) {
+      if (customers.length === 0) {
         tableWrapper.classList.add('hidden');
         emptyState.classList.remove('hidden');
+        if (searchQuery) {
+          emptyTitle.textContent = `Customer "${searchQuery}" tidak masuk ke daftar Eligible pada filter aktif.`;
+          emptyDesc.textContent = diagnoseMissingSearch(searchQuery);
+        } else {
+          emptyTitle.textContent = 'Tidak ada customer yang memenuhi kriteria filter saat ini.';
+          emptyDesc.textContent = 'Coba ubah pilihan Contract Status atau Product Program di atas.';
+        }
         return;
       }
 
@@ -648,8 +708,8 @@
       tableWrapper.classList.remove('hidden');
       tbody.innerHTML = '';
 
-      top10.forEach((cust, idx) => {
-        const rank = idx + 1;
+      customers.forEach((cust, idx) => {
+        const rank = cust.actualRank;
         const avgProgressPct = cust.validTenorCount > 0
           ? Math.round((cust.sumProgressRatio / cust.validTenorCount) * 100)
           : 0;
@@ -665,15 +725,14 @@
         const marketingList = Array.from(cust.marketings).join(', ') || '-';
         const hasOtherStatusContracts = cust.totalAllContracts > cust.contracts.length;
 
-        // 1. BARIS UTAMA CUSTOMER
         const mainTr = document.createElement('tr');
         mainTr.className = 'hover:bg-slate-50/90 transition cursor-pointer group';
         mainTr.onclick = () => toggleSubHeader(idx);
 
         mainTr.innerHTML = `
           <td class="py-4 pl-5 pr-2 text-center">
-            <span class="inline-flex items-center justify-center w-7 h-7 rounded-full text-xs font-bold ${rank <= 3 ? 'bg-slate-900 text-white' : 'bg-slate-100 text-slate-700'}">
-              ${rank}
+            <span class="inline-flex items-center justify-center min-w-[28px] h-7 px-1.5 rounded-full text-xs font-bold ${rank <= 3 ? 'bg-slate-900 text-white' : (rank <= 10 ? 'bg-emerald-100 text-emerald-800' : 'bg-slate-100 text-slate-700')}">
+              #${rank}
             </span>
           </td>
           <td class="py-4 px-3">
@@ -689,7 +748,7 @@
                   <span class="text-[11px] font-semibold bg-slate-100 text-slate-600 px-2 py-0.5 rounded-md border border-slate-200">
                     ${cust.contracts.length} Kontrak Filter
                   </span>
-                  ${hasOtherStatusContracts ? `<span class="text-[10px] font-medium bg-slate-50 text-slate-500 px-1.5 py-0.5 rounded border border-slate-200" title="Total seluruh kontrak historis customer ini di database">Total Historis: ${cust.totalAllContracts}</span>` : ''}
+                  ${hasOtherStatusContracts ? `<span class="text-[10px] font-medium bg-slate-50 text-slate-500 px-1.5 py-0.5 rounded border border-slate-200">Total Historis: ${cust.totalAllContracts}</span>` : ''}
                   ${isHighProspect ? `<span class="text-[11px] font-semibold bg-emerald-50 text-emerald-700 px-2 py-0.5 rounded-md border border-emerald-200">Siap Top-Up</span>` : ''}
                 </div>
                 <div class="text-xs text-slate-500 mt-0.5">
@@ -699,7 +758,7 @@
             </div>
           </td>
           <td class="py-4 px-3 text-center">
-            <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold border ${ovdBadgeClass} tabular-nums" title="Max OVD tertinggi dari seluruh riwayat kontrak customer">
+            <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold border ${ovdBadgeClass} tabular-nums">
               ${cust.globalMaxOvd} hari
             </span>
             <div class="text-[11px] text-slate-400 mt-0.5 tabular-nums">Tot Global: ${cust.globalTotOvd} hr</div>
@@ -724,7 +783,6 @@
           </td>
         `;
 
-        // 2. SUB-HEADER ROW
         const subTr = document.createElement('tr');
         subTr.id = `subheader-${idx}`;
         subTr.className = 'hidden bg-slate-50/95';
@@ -852,7 +910,7 @@
     }
 
     function expandAllRows(expand) {
-      currentTop10.forEach((_, idx) => {
+      displayedCustomers.forEach((_, idx) => {
         const subRow = document.getElementById(`subheader-${idx}`);
         const chevron = document.getElementById(`chevron-${idx}`);
         if (!subRow) return;
@@ -866,18 +924,15 @@
       });
     }
 
-    // ==========================================
-    // COPY RINGKASAN PROSPEK UNTUK WHATSAPP MARKETING
-    // ==========================================
     function copyProspectPitch(event, idx) {
       event.stopPropagation();
-      const cust = currentTop10[idx];
+      const cust = displayedCustomers[idx];
       if (!cust) return;
 
       const marketingList = Array.from(cust.marketings).join(', ') || '-';
       const lines = [
         `*PROSPEK REPEAT ORDER / TOP-UP (STRICT GOOD PAYER)*`,
-        `Customer: *${cust.customerName}*`,
+        `Customer: *${cust.customerName}* (Rank #${cust.actualRank})`,
         `Kontrak Terfilter: ${cust.contracts.length} Unit (Total Historis: ${cust.totalAllContracts} Kontrak)`,
         `Global Max OVD: ${cust.globalMaxOvd} hari (Total Global OVD: ${cust.globalTotOvd} hari • Non-Repo)`,
         `Total AF Kontrak: ${formatIDR(cust.totalAfKontrak)}`,
@@ -899,12 +954,9 @@
       });
     }
 
-    // ==========================================
-    // RENDER CHART PERBANDINGAN AF KONTRAK VS AF OUT
-    // ==========================================
-    function renderComparisonChart(top10) {
+    function renderComparisonChart(topItems) {
       const section = document.getElementById('chartSection');
-      if (top10.length === 0) {
+      if (topItems.length === 0) {
         section.classList.add('hidden');
         return;
       }
@@ -915,9 +967,9 @@
         chartInstance.destroy();
       }
 
-      const labels = top10.map(c => c.customerName.length > 22 ? c.customerName.substring(0, 22) + '...' : c.customerName);
-      const afKontrakData = top10.map(c => c.totalAfKontrak / 1e9);
-      const afOutData = top10.map(c => c.totalAfOut / 1e9);
+      const labels = topItems.map(c => c.customerName.length > 22 ? c.customerName.substring(0, 22) + '...' : c.customerName);
+      const afKontrakData = topItems.map(c => c.totalAfKontrak / 1e9);
+      const afOutData = topItems.map(c => c.totalAfOut / 1e9);
 
       chartInstance = new Chart(ctx, {
         type: 'bar',
