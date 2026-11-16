@@ -144,7 +144,7 @@
       </div>
     </section>
 
-    <!-- KPI SUMMARY CARDS -->
+    <!-- KPI SUMMARY CARDS (SELURUH DATA ELIGIBLE GOOD PAYERS) -->
     <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
       <!-- KPI 1 -->
       <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-4 border-l-4 border-l-emerald-500">
@@ -156,33 +156,33 @@
         <p class="text-xs text-slate-400 mt-1.5">Customer lolos MAX OVD &lt; 30 hari</p>
       </div>
 
-      <!-- KPI 2 -->
+      <!-- KPI 2: Total AF Kontrak Semua Eligible -->
       <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-4 border-l-4 border-l-blue-500">
-        <p class="text-xs font-medium text-slate-500 uppercase tracking-wider">AF Kontrak (Top 10)</p>
+        <p class="text-xs font-medium text-slate-500 uppercase tracking-wider">AF Kontrak (Eligible)</p>
         <div class="mt-2">
-          <h3 class="text-xl sm:text-2xl font-extrabold text-slate-900 tabular-nums" id="kpiTopAfKontrak">-</h3>
+          <h3 class="text-xl sm:text-2xl font-extrabold text-slate-900 tabular-nums" id="kpiEligibleAfKontrak">-</h3>
         </div>
-        <p class="text-xs text-slate-400 mt-1.5">Akumulasi pembiayaan Top 10</p>
+        <p class="text-xs text-slate-400 mt-1.5">Total pembiayaan seluruh kontrak eligible</p>
       </div>
 
-      <!-- KPI 3 -->
+      <!-- KPI 3: Total AF Outstanding Semua Eligible -->
       <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-4 border-l-4 border-l-indigo-500">
-        <p class="text-xs font-medium text-slate-500 uppercase tracking-wider">AF Outstanding (Top 10)</p>
+        <p class="text-xs font-medium text-slate-500 uppercase tracking-wider">AF Outstanding (Eligible)</p>
         <div class="mt-2 flex items-baseline justify-between gap-2">
-          <h3 class="text-xl sm:text-2xl font-extrabold text-slate-900 tabular-nums" id="kpiTopAfOut">-</h3>
+          <h3 class="text-xl sm:text-2xl font-extrabold text-slate-900 tabular-nums" id="kpiEligibleAfOut">-</h3>
           <span class="text-xs font-semibold text-indigo-700 bg-indigo-50 px-2 py-0.5 rounded-full" id="kpiRunoffPct">-</span>
         </div>
-        <p class="text-xs text-slate-400 mt-1.5">Sisa pokok berjalan Top 10</p>
+        <p class="text-xs text-slate-400 mt-1.5">Sisa pokok berjalan seluruh kontrak eligible</p>
       </div>
 
-      <!-- KPI 4 -->
+      <!-- KPI 4: Total Penalty Semua Eligible -->
       <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-4 border-l-4 border-l-amber-500">
-        <p class="text-xs font-medium text-slate-500 uppercase tracking-wider">Total Penalty (Top 10)</p>
+        <p class="text-xs font-medium text-slate-500 uppercase tracking-wider">Total Penalty (Eligible)</p>
         <div class="mt-2 flex items-baseline justify-between gap-2">
-          <h3 class="text-xl sm:text-2xl font-extrabold text-slate-900 tabular-nums" id="kpiTopPenalty">-</h3>
+          <h3 class="text-xl sm:text-2xl font-extrabold text-slate-900 tabular-nums" id="kpiEligiblePenalty">-</h3>
           <span class="text-xs font-semibold text-amber-700 bg-amber-50 px-2 py-0.5 rounded-full" id="kpiReadyTopup">- Siap Top-Up</span>
         </div>
-        <p class="text-xs text-slate-400 mt-1.5">Kolom PEN_AMT (AM) Top 10</p>
+        <p class="text-xs text-slate-400 mt-1.5">Akumulasi PEN_AMT (AM) seluruh eligible</p>
       </div>
     </section>
 
@@ -264,10 +264,9 @@
     // KONFIGURASI GOOGLE SHEET
     // ==========================================
     const SPREADSHEET_ID = '1VUCL0zZIhNrc6X3bhWJL_hIDrKnhZXJm38DPCM2YHMU';
-    const DEFAULT_GID = '1098227073'; // GID untuk sheet AR Info 16/11/26
 
     let rawRecords = [];
-    let selectedStatuses = new Set(['AC']); // Default fokus ke Active (AC), bisa klik ALL atau multi-select
+    let selectedStatuses = new Set(['AC']); // Default fokus ke Active (AC)
     let selectedProducts = new Set(['ALL']);
     let currentTop10 = [];
     let chartInstance = null;
@@ -280,14 +279,11 @@
       if (typeof val === 'number') return isNaN(val) ? 0 : val;
       let str = String(val).trim();
       if (str === '-' || str === '') return 0;
-      // Handle format Indonesia (titik pemisah ribuan, koma desimal) vs format standar
-      // Contoh di sheet: "1.150.000.000" atau "32.091.865,00"
       if (str.includes('.') && str.includes(',')) {
         str = str.replace(/\./g, '').replace(',', '.');
       } else if ((str.match(/\./g) || []).length > 1) {
         str = str.replace(/\./g, '');
       } else if (str.includes('.') && !str.includes(',')) {
-        // Cek apakah titik adalah pemisah ribuan (3 digit di belakangnya)
         const parts = str.split('.');
         if (parts[1] && parts[1].length === 3) {
           str = str.replace(/\./g, '');
@@ -336,7 +332,6 @@
       chartSection.classList.add('hidden');
 
       try {
-        // Gunakan nama sheet jika diisi, fallback ke gid jika gagal
         const encodedSheet = encodeURIComponent(sheetName);
         const url = `https://docs.google.com/spreadsheets/d/${SPREADSHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodedSheet}`;
 
@@ -344,7 +339,6 @@
         if (!response.ok) throw new Error(`HTTP Error ${response.status}`);
         const text = await response.text();
 
-        // Ekstrak JSON dari pembungkus google.visualization.Query.setResponse(...)
         const jsonMatch = text.match(/google\.visualization\.Query\.setResponse\(([\s\S]*)\);/);
         if (!jsonMatch || !jsonMatch[1]) {
           throw new Error('Format respons Google Sheet tidak valid atau sheet tidak ditemukan.');
@@ -359,11 +353,6 @@
         rawRecords = [];
         let latestCutOff = '';
 
-        // Pemetaan Indeks Kolom Sesuai Struktur Sheet AR Info:
-        // A(0): TANGGAL CUT OFF | C(2): NO_KONTRAK | E(4): NAMA_CUSTOMER | F(5): OBJ
-        // G(6): BTM | H(7): TAHUN_UNIT | M(12): AF_KONTRAK | O(14): AFOUT
-        // T(19): INST_KE | V(21): TENOR | Z(25): MAX_OVD | AA(26): TOT_OVD
-        // AH(33): CONTRACT_STATUS | AM(38): PEN_AMT | AU(46): SUPPLIER_NAME | AX(49): USER_AO
         rows.forEach((row) => {
           const c = row.c || [];
           const getVal = (idx) => (c[idx] && c[idx].v !== null && c[idx].v !== undefined) ? c[idx].v : '';
@@ -372,7 +361,6 @@
           const customerName = String(getVal(4)).trim();
           const noKontrak = String(getVal(2)).trim();
 
-          // Lewati baris header atau baris kosong
           if (!customerName || customerName === 'NAMA_CUSTOMER' || !noKontrak || noKontrak === 'NO_KONTRAK') {
             return;
           }
@@ -447,7 +435,6 @@
       const statusContainer = document.getElementById('statusFilterContainer');
       statusContainer.innerHTML = '';
 
-      // Tombol ALL Status
       const isAllStatus = selectedStatuses.has('ALL');
       statusContainer.appendChild(createPillButton(
         `Semua (${rawRecords.length})`,
@@ -541,7 +528,6 @@
       });
 
       // Step 2: Agregasi per Customer (E)
-      // Penting: Hitung MAX(MAX_OVD) dari seluruh kontrak customer pada filter terpilih
       const customerMap = new Map();
 
       filteredContracts.forEach(c => {
@@ -590,9 +576,6 @@
       });
 
       // Step 4: Pengurutan Top 10
-      // Urutan 1: MAX_OVD terendah (0 -> 29)
-      // Urutan 2 (Tie-breaker): TOT_OVD terendah
-      // Urutan 3 (Tie-breaker): Total AF Kontrak terbesar
       eligibleCustomers.sort((a, b) => {
         if (a.maxOvdCustomer !== b.maxOvdCustomer) {
           return a.maxOvdCustomer - b.maxOvdCustomer;
@@ -605,39 +588,40 @@
 
       currentTop10 = eligibleCustomers.slice(0, 10);
 
-      // Update KPI Cards
-      updateKPIs(eligibleCustomers, currentTop10);
+      // Update KPI Cards menggunakan SELURUH data eligibleCustomers
+      updateKPIs(eligibleCustomers);
 
-      // Render Table & Chart
+      // Render Table & Chart untuk Top 10
       renderTop10Table(currentTop10);
       renderComparisonChart(currentTop10);
     }
 
-    function updateKPIs(allEligible, top10) {
+    function updateKPIs(allEligible) {
       const totalCust = allEligible.length;
       const totalContracts = allEligible.reduce((acc, c) => acc + c.contracts.length, 0);
 
-      const topAfKontrak = top10.reduce((acc, c) => acc + c.totalAfKontrak, 0);
-      const topAfOut = top10.reduce((acc, c) => acc + c.totalAfOut, 0);
-      const topPenalty = top10.reduce((acc, c) => acc + c.totalPenalty, 0);
+      // Akumulasi dari SELURUH kontrak pada data eligible good payers
+      const eligibleAfKontrak = allEligible.reduce((acc, c) => acc + c.totalAfKontrak, 0);
+      const eligibleAfOut = allEligible.reduce((acc, c) => acc + c.totalAfOut, 0);
+      const eligiblePenalty = allEligible.reduce((acc, c) => acc + c.totalPenalty, 0);
 
-      // Hitung persentase pokok yang sudah terbayar pada Top 10
-      const paidPrincipalPct = topAfKontrak > 0
-        ? Math.max(0, Math.round(((topAfKontrak - topAfOut) / topAfKontrak) * 100))
+      // Persentase pokok yang sudah terbayar pada seluruh portofolio eligible
+      const paidPrincipalPct = eligibleAfKontrak > 0
+        ? Math.max(0, Math.round(((eligibleAfKontrak - eligibleAfOut) / eligibleAfKontrak) * 100))
         : 0;
 
-      // Hitung berapa customer di Top 10 yang rata-rata tenornya >= 70% (siap top-up)
-      const readyTopupCount = top10.filter(c => {
+      // Jumlah customer eligible yang rata-rata tenornya >= 70% (siap top-up)
+      const readyTopupCount = allEligible.filter(c => {
         const avgPct = c.validTenorCount > 0 ? (c.sumProgressRatio / c.validTenorCount) * 100 : 0;
         return avgPct >= 70;
       }).length;
 
       document.getElementById('kpiTotalCustomers').textContent = totalCust.toLocaleString('id-ID');
       document.getElementById('kpiTotalContracts').textContent = `${totalContracts.toLocaleString('id-ID')} Kontrak`;
-      document.getElementById('kpiTopAfKontrak').textContent = formatCompactIDR(topAfKontrak);
-      document.getElementById('kpiTopAfOut').textContent = formatCompactIDR(topAfOut);
+      document.getElementById('kpiEligibleAfKontrak').textContent = formatCompactIDR(eligibleAfKontrak);
+      document.getElementById('kpiEligibleAfOut').textContent = formatCompactIDR(eligibleAfOut);
       document.getElementById('kpiRunoffPct').textContent = `Lunas ${paidPrincipalPct}%`;
-      document.getElementById('kpiTopPenalty').textContent = formatCompactIDR(topPenalty);
+      document.getElementById('kpiEligiblePenalty').textContent = formatCompactIDR(eligiblePenalty);
       document.getElementById('kpiReadyTopup').textContent = `${readyTopupCount} Siap Top-Up`;
     }
 
@@ -668,7 +652,6 @@
           ? Math.round((cust.sumProgressRatio / cust.validTenorCount) * 100)
           : 0;
 
-        // Badge warna MAX OVD
         let ovdBadgeClass = 'bg-emerald-100 text-emerald-800 border-emerald-200';
         if (cust.maxOvdCustomer >= 15) {
           ovdBadgeClass = 'bg-amber-100 text-amber-800 border-amber-200';
@@ -676,7 +659,6 @@
           ovdBadgeClass = 'bg-sky-100 text-sky-800 border-sky-200';
         }
 
-        // Sinyal Prospek Top-Up
         const isHighProspect = avgProgressPct >= 70;
         const marketingList = Array.from(cust.marketings).join(', ') || '-';
 
@@ -738,12 +720,11 @@
           </td>
         `;
 
-        // 2. SUB-HEADER ROW (TERSEMBUNYI HINGGA NAMA CUSTOMER DIKLIK)
+        // 2. SUB-HEADER ROW
         const subTr = document.createElement('tr');
         subTr.id = `subheader-${idx}`;
         subTr.className = 'hidden bg-slate-50/95';
 
-        // Urutkan kontrak milik customer berdasarkan sisa tenor terkecil
         const sortedContracts = [...cust.contracts].sort((a, b) => {
           const remA = Math.max(0, a.tenor - a.instKe);
           const remB = Math.max(0, b.tenor - b.instKe);
@@ -932,8 +913,8 @@
       }
 
       const labels = top10.map(c => c.customerName.length > 22 ? c.customerName.substring(0, 22) + '...' : c.customerName);
-      const afKontrakData = top10.map(c => c.totalAfKontrak / 1e9); // dalam Miliar
-      const afOutData = top10.map(c => c.totalAfOut / 1e9); // dalam Miliar
+      const afKontrakData = top10.map(c => c.totalAfKontrak / 1e9);
+      const afOutData = top10.map(c => c.totalAfOut / 1e9);
 
       chartInstance = new Chart(ctx, {
         type: 'bar',
@@ -1004,7 +985,6 @@
         .replace(/'/g, '&#039;');
     }
 
-    // Jalankan otomatis saat halaman dimuat
     window.addEventListener('DOMContentLoaded', loadSheetData);
   </script>
 </body>
