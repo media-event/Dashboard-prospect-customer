@@ -59,14 +59,7 @@
         </p>
       </div>
 
-      <div class="flex flex-wrap items-center gap-2.5">
-        <!-- Sheet Name / Cut-Off Info -->
-        <div class="flex items-center gap-2 bg-slate-800/90 border border-slate-700 px-3 py-1.5 rounded-lg text-xs">
-          <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" id="statusDot"></span>
-          <span class="text-slate-400">Cut-Off:</span>
-          <span class="font-semibold text-white" id="cutOffDisplay">Memuat...</span>
-        </div>
-
+      <div class="flex items-center gap-2.5">
         <!-- Custom Sheet Tab Input -->
         <div class="flex items-center bg-slate-800 border border-slate-700 rounded-lg overflow-hidden text-xs">
           <input
@@ -74,12 +67,12 @@
             id="sheetNameInput"
             value="AR Info 16/11/26"
             placeholder="Nama Tab Sheet..."
-            class="bg-transparent text-white px-2.5 py-1.5 w-36 focus:outline-none focus:bg-slate-700/60"
+            class="bg-transparent text-white px-3 py-2 w-40 focus:outline-none focus:bg-slate-700/60"
             title="Ubah nama tab jika tanggal cut-off AR Info berubah"
           />
           <button
             onclick="loadSheetData()"
-            class="bg-emerald-600 hover:bg-emerald-500 text-white font-medium px-3 py-1.5 transition cursor-pointer"
+            class="bg-emerald-600 hover:bg-emerald-500 text-white font-medium px-3.5 py-2 transition cursor-pointer"
           >
             Sync
           </button>
@@ -106,18 +99,18 @@
     <section class="bg-white rounded-xl shadow-sm border border-slate-200 p-4 sm:p-5">
       <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 items-end">
         
-        <!-- Filter 1: Contract Status (Kolom AH) -->
+        <!-- Filter 1: Contract Status (Kolom AH - Single Select) -->
         <div class="lg:col-span-5">
           <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-2">
-            Contract Status Tampilan <span class="text-slate-400 font-normal">(Kolom AH)</span>
+            Contract Status Tampilan <span class="text-slate-400 font-normal">(Kolom AH • Pilih Satu)</span>
           </label>
           <div id="statusFilterContainer" class="flex flex-wrap gap-1.5"></div>
         </div>
 
-        <!-- Filter 2: Product Program (Kolom F / OBJ) -->
+        <!-- Filter 2: Product Program (Kolom F / OBJ - Single Select) -->
         <div class="lg:col-span-4">
           <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-2">
-            Product Program Tampilan <span class="text-slate-400 font-normal">(Kolom F - OBJ)</span>
+            Product Program Tampilan <span class="text-slate-400 font-normal">(Kolom F • Pilih Satu)</span>
           </label>
           <div id="productFilterContainer" class="flex flex-wrap gap-1.5"></div>
         </div>
@@ -156,7 +149,7 @@
         <p class="text-xs text-slate-400 mt-1.5">Lolos Global MAX OVD &lt; 30 hr &amp; Non-RP</p>
       </div>
 
-      <!-- KPI 2: Total AF Kontrak Semua Eligible -->
+      <!-- KPI 2 -->
       <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-4 border-l-4 border-l-blue-500">
         <p class="text-xs font-medium text-slate-500 uppercase tracking-wider">AF Kontrak (Eligible)</p>
         <div class="mt-2">
@@ -165,7 +158,7 @@
         <p class="text-xs text-slate-400 mt-1.5">Total pembiayaan seluruh kontrak eligible</p>
       </div>
 
-      <!-- KPI 3: Total AF Outstanding Semua Eligible -->
+      <!-- KPI 3 -->
       <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-4 border-l-4 border-l-indigo-500">
         <p class="text-xs font-medium text-slate-500 uppercase tracking-wider">AF Outstanding (Eligible)</p>
         <div class="mt-2 flex items-baseline justify-between gap-2">
@@ -175,7 +168,7 @@
         <p class="text-xs text-slate-400 mt-1.5">Sisa pokok berjalan seluruh kontrak eligible</p>
       </div>
 
-      <!-- KPI 4: Total Penalty Semua Eligible -->
+      <!-- KPI 4 -->
       <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-4 border-l-4 border-l-amber-500">
         <p class="text-xs font-medium text-slate-500 uppercase tracking-wider">Total Penalty (Eligible)</p>
         <div class="mt-2 flex items-baseline justify-between gap-2">
@@ -264,9 +257,9 @@
     const SPREADSHEET_ID = '1VUCL0zZIhNrc6X3bhWJL_hIDrKnhZXJm38DPCM2YHMU';
 
     let rawRecords = [];
-    let globalCustomerProfiles = new Map(); // Menyimpan profil historis lintas-status & lintas-produk
-    let selectedStatuses = new Set(['AC']); // Default filter tampilan: Active (AC)
-    let selectedProducts = new Set(['ALL']);
+    let globalCustomerProfiles = new Map();
+    let selectedStatus = 'AC';   // Single-select eksklusif (default: AC)
+    let selectedProduct = 'ALL'; // Single-select eksklusif (default: ALL)
     let currentTop10 = [];
     let chartInstance = null;
 
@@ -313,7 +306,6 @@
       return 'Rp ' + Math.round(num).toLocaleString('id-ID');
     }
 
-    // Normalisasi nama customer untuk pengelompokan lintas kontrak yang konsisten
     function normalizeCustomerKey(name) {
       return String(name || '').trim().toUpperCase().replace(/\s+/g, ' ');
     }
@@ -355,22 +347,16 @@
 
         const rows = data.table.rows || [];
         rawRecords = [];
-        let latestCutOff = '';
 
         rows.forEach((row) => {
           const c = row.c || [];
           const getVal = (idx) => (c[idx] && c[idx].v !== null && c[idx].v !== undefined) ? c[idx].v : '';
-          const getFmt = (idx) => (c[idx] && c[idx].f) ? c[idx].f : getVal(idx);
 
           const customerName = String(getVal(4)).trim();
           const noKontrak = String(getVal(2)).trim();
 
           if (!customerName || customerName === 'NAMA_CUSTOMER' || !noKontrak || noKontrak === 'NO_KONTRAK') {
             return;
-          }
-
-          if (!latestCutOff && getFmt(0)) {
-            latestCutOff = String(getFmt(0));
           }
 
           const status = String(getVal(33)).trim().toUpperCase() || 'UNKNOWN';
@@ -407,10 +393,7 @@
           });
         });
 
-        // TAHAP A: Bangun Profil Historis Lintas-Status & Lintas-Produk
         buildGlobalCustomerProfiles();
-
-        document.getElementById('cutOffDisplay').textContent = latestCutOff || sheetName;
         buildFilterPills();
         applyFilters();
 
@@ -423,7 +406,7 @@
     }
 
     // ==========================================
-    // TAHAP A & B: GLOBAL CUSTOMER SCREENING
+    // STRICT GLOBAL CUSTOMER SCREENING
     // ==========================================
     function buildGlobalCustomerProfiles() {
       globalCustomerProfiles.clear();
@@ -450,22 +433,24 @@
         }
       });
 
-      // Tandai status kelayakan (Hard Gatekeeper):
-      // Lolos HANYA JIKA Global MAX_OVD < 30 hari DAN tidak pernah berstatus RP (Repo)
       globalCustomerProfiles.forEach(profile => {
         profile.isGloballyEligible = (profile.globalMaxOvd < 30) && !profile.hasRepoHistory;
       });
     }
 
     // ==========================================
-    // MEMBANGUN TOMBOL FILTER DINAMIS (AH & F)
+    // TOMBOL FILTER SINGLE-SELECT (EKSKLUSIF)
     // ==========================================
     function buildFilterPills() {
-      // 1. Contract Status (AH)
+      // 1. Contract Status (AH) - Hanya 1 tombol yang bisa aktif
       const statusCounts = {};
       rawRecords.forEach(r => {
         statusCounts[r.status] = (statusCounts[r.status] || 0) + 1;
       });
+
+      if (selectedStatus !== 'ALL' && !statusCounts[selectedStatus]) {
+        selectedStatus = statusCounts['AC'] ? 'AC' : 'ALL';
+      }
 
       const statusLabels = {
         'AC': 'AC (Active)',
@@ -478,12 +463,12 @@
       const statusContainer = document.getElementById('statusFilterContainer');
       statusContainer.innerHTML = '';
 
-      const isAllStatus = selectedStatuses.has('ALL');
-      statusContainer.appendChild(createPillButton(
+      statusContainer.appendChild(createSingleSelectPill(
         `Semua (${rawRecords.length})`,
-        isAllStatus,
+        selectedStatus === 'ALL',
         () => {
-          selectedStatuses = new Set(['ALL']);
+          if (selectedStatus === 'ALL') return;
+          selectedStatus = 'ALL';
           buildFilterPills();
           applyFilters();
         }
@@ -491,69 +476,61 @@
 
       statusOrder.forEach(st => {
         if (!statusCounts[st]) return;
-        const active = !isAllStatus && selectedStatuses.has(st);
+        const isActive = selectedStatus === st;
         const label = `${statusLabels[st] || st} (${statusCounts[st]})`;
-        statusContainer.appendChild(createPillButton(label, active, () => {
-          if (selectedStatuses.has('ALL')) {
-            selectedStatuses.clear();
-          }
-          if (selectedStatuses.has(st)) {
-            selectedStatuses.delete(st);
-            if (selectedStatuses.size === 0) selectedStatuses.add('ALL');
-          } else {
-            selectedStatuses.add(st);
-          }
+        statusContainer.appendChild(createSingleSelectPill(label, isActive, () => {
+          if (selectedStatus === st) return; // Tetap terkunci pada pilihan ini
+          selectedStatus = st;
           buildFilterPills();
           applyFilters();
         }));
       });
 
-      // 2. Product Program (F - OBJ)
+      // 2. Product Program (F - OBJ) - Hanya 1 tombol yang bisa aktif
       const productCounts = {};
       rawRecords.forEach(r => {
         productCounts[r.product] = (productCounts[r.product] || 0) + 1;
       });
 
+      if (selectedProduct !== 'ALL' && !productCounts[selectedProduct]) {
+        selectedProduct = 'ALL';
+      }
+
       const prodContainer = document.getElementById('productFilterContainer');
       prodContainer.innerHTML = '';
 
-      const isAllProd = selectedProducts.has('ALL');
-      prodContainer.appendChild(createPillButton(
+      prodContainer.appendChild(createSingleSelectPill(
         `Semua Produk`,
-        isAllProd,
+        selectedProduct === 'ALL',
         () => {
-          selectedProducts = new Set(['ALL']);
+          if (selectedProduct === 'ALL') return;
+          selectedProduct = 'ALL';
           buildFilterPills();
           applyFilters();
         }
       ));
 
       Object.keys(productCounts).sort().forEach(prod => {
-        const active = !isAllProd && selectedProducts.has(prod);
-        prodContainer.appendChild(createPillButton(`${prod} (${productCounts[prod]})`, active, () => {
-          if (selectedProducts.has('ALL')) {
-            selectedProducts.clear();
-          }
-          if (selectedProducts.has(prod)) {
-            selectedProducts.delete(prod);
-            if (selectedProducts.size === 0) selectedProducts.add('ALL');
-          } else {
-            selectedProducts.add(prod);
-          }
+        const isActive = selectedProduct === prod;
+        prodContainer.appendChild(createSingleSelectPill(`${prod} (${productCounts[prod]})`, isActive, () => {
+          if (selectedProduct === prod) return; // Tetap terkunci pada pilihan ini
+          selectedProduct = prod;
           buildFilterPills();
           applyFilters();
         }));
       });
     }
 
-    function createPillButton(text, isActive, onClick) {
+    function createSingleSelectPill(text, isActive, onClick) {
       const btn = document.createElement('button');
       btn.type = 'button';
       btn.textContent = text;
       btn.onclick = onClick;
-      btn.className = isActive
-        ? 'px-3 py-1.5 rounded-lg text-xs font-semibold bg-emerald-600 text-white shadow-2xs transition cursor-pointer'
-        : 'px-3 py-1.5 rounded-lg text-xs font-medium bg-slate-100 text-slate-700 hover:bg-slate-200 transition cursor-pointer';
+      if (isActive) {
+        btn.className = 'px-3 py-1.5 rounded-lg text-xs font-semibold bg-emerald-600 text-white shadow-2xs ring-2 ring-emerald-600/30 cursor-default';
+      } else {
+        btn.className = 'px-3 py-1.5 rounded-lg text-xs font-medium bg-slate-100 text-slate-600 hover:bg-slate-200 hover:text-slate-900 transition cursor-pointer';
+      }
       return btn;
     }
 
@@ -563,19 +540,15 @@
     function applyFilters() {
       const searchQuery = document.getElementById('searchInput').value.trim().toLowerCase();
 
-      // Step 1: Ambil kontrak yang:
-      // (a) Customer-nya LOLOS Strict Global Screening (Global MAX_OVD < 30 & Non-RP)
-      // (b) Kontraknya sesuai dengan Filter Status (AH) & Filter Produk (F) yang sedang dipilih
       const eligibleFilteredContracts = rawRecords.filter(r => {
         const globalProfile = globalCustomerProfiles.get(r.customerKey);
         if (!globalProfile || !globalProfile.isGloballyEligible) return false;
 
-        const matchStatus = selectedStatuses.has('ALL') || selectedStatuses.has(r.status);
-        const matchProduct = selectedProducts.has('ALL') || selectedProducts.has(r.product);
+        const matchStatus = (selectedStatus === 'ALL') || (r.status === selectedStatus);
+        const matchProduct = (selectedProduct === 'ALL') || (r.product === selectedProduct);
         return matchStatus && matchProduct;
       });
 
-      // Step 2: Agregasi per Customer untuk kontrak yang tampil
       const customerMap = new Map();
 
       eligibleFilteredContracts.forEach(c => {
@@ -610,7 +583,6 @@
         }
       });
 
-      // Step 3: Filter pencarian teks (Nama Customer / Nama Marketing)
       let eligibleCustomers = Array.from(customerMap.values()).filter(cust => {
         if (searchQuery) {
           const inName = cust.customerName.toLowerCase().includes(searchQuery);
@@ -620,10 +592,6 @@
         return true;
       });
 
-      // Step 4: Pengurutan Top 10 berdasarkan Rekam Jejak Global & Eksposur
-      // Prioritas 1: Global MAX_OVD terendah (0 -> 29 hari)
-      // Prioritas 2: Global TOT_OVD terendah
-      // Prioritas 3: Total AF Kontrak terbesar pada filter aktif
       eligibleCustomers.sort((a, b) => {
         if (a.globalMaxOvd !== b.globalMaxOvd) {
           return a.globalMaxOvd - b.globalMaxOvd;
@@ -636,10 +604,7 @@
 
       currentTop10 = eligibleCustomers.slice(0, 10);
 
-      // Update KPI Cards menggunakan SELURUH data eligibleCustomers
       updateKPIs(eligibleCustomers);
-
-      // Render Table & Chart Top 10
       renderTop10Table(currentTop10);
       renderComparisonChart(currentTop10);
     }
@@ -821,7 +786,6 @@
         subTr.innerHTML = `
           <td colspan="7" class="p-4 sm:px-8 sm:py-5 border-b border-slate-300">
             <div class="bg-white rounded-xl border border-slate-200 shadow-2xs overflow-hidden">
-              <!-- Sub-header Top Summary Strip -->
               <div class="bg-slate-800 text-white px-4 py-3 flex flex-wrap items-center justify-between gap-3">
                 <div class="flex flex-wrap items-center gap-4 text-xs">
                   <div>
@@ -854,7 +818,6 @@
                 </button>
               </div>
 
-              <!-- Sub-header Detail Contracts Table -->
               <div class="overflow-x-auto">
                 <table class="w-full text-left border-collapse">
                   <thead>
