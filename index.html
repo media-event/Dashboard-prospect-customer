@@ -52,7 +52,7 @@
           </span>
         </div>
         <p class="text-xs text-slate-400 mt-1">
-          Screening Lintas-Kontrak: <span id="headerCriteriaLabel" class="text-emerald-400 font-semibold">Global MAX OVD &lt; 30 Hari &amp; Non-Repo</span> • Urutan: Global Max OVD Terendah &rarr; Terburuk (AF Kontrak Terbesar)
+          Screening Lintas-Kontrak: <span id="headerCriteriaLabel" class="text-emerald-400 font-semibold">Global MAX OVD 0 – 6 Hari &amp; Non-Repo</span> • Urutan: Global Max OVD Terendah &rarr; Terburuk (AF Kontrak Terbesar)
         </p>
       </div>
 
@@ -96,10 +96,10 @@
     <section class="bg-white rounded-xl shadow-sm border border-slate-200 p-4 sm:p-5 space-y-4">
       <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 items-end">
         
-        <!-- Filter 1: Kriteria Global Max OVD (Pilih Satu) -->
-        <div class="lg:col-span-4">
+        <!-- Filter 1: Kategori Bucket Global Max OVD (Pilih Satu) -->
+        <div class="lg:col-span-5">
           <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-2">
-            Kriteria Global Max OVD <span class="text-slate-400 font-normal">(Pilih Satu)</span>
+            Kategori Global Max OVD <span class="text-slate-400 font-normal">(Pilih Satu Tier)</span>
           </label>
           <div id="ovdFilterContainer" class="flex flex-wrap gap-1.5"></div>
         </div>
@@ -113,9 +113,9 @@
         </div>
 
         <!-- Filter 3: Product Program (Kolom F / OBJ - Single Select) -->
-        <div class="lg:col-span-4">
+        <div class="lg:col-span-3">
           <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-2">
-            Product Program Tampilan <span class="text-slate-400 font-normal">(Kolom F)</span>
+            Product Program <span class="text-slate-400 font-normal">(Kolom F)</span>
           </label>
           <div id="productFilterContainer" class="flex flex-wrap gap-1.5"></div>
         </div>
@@ -124,8 +124,8 @@
 
       <!-- Search Customer / Marketing -->
       <div class="pt-3 border-t border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-        <p class="text-xs text-slate-500">
-          Urutan peringkat menampilkan <strong class="text-slate-700">Global Max OVD terendah ke terburuk</strong> dalam batas kriteria OVD terpilih.
+        <p class="text-xs text-slate-500" id="ovdTierHelperText">
+          Menampilkan <strong class="text-slate-700">Prime Good Payers (0 – 6 hari)</strong>, diurutkan dari 0 hari ke 6 hari lalu AF Kontrak terbesar.
         </p>
         <div class="relative w-full sm:w-80">
           <input
@@ -151,7 +151,7 @@
       </div>
     </section>
 
-    <!-- KPI SUMMARY CARDS (UPDATED COLOR THEME) -->
+    <!-- KPI SUMMARY CARDS -->
     <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
       
       <!-- KPI 1: ELIGIBLE GOOD PAYERS (EMERALD / TEAL GRADIENT - CLICKABLE) -->
@@ -159,7 +159,7 @@
         type="button"
         onclick="openKpiModal('eligible')"
         class="text-left bg-gradient-to-br from-emerald-50 via-teal-50/70 to-white rounded-xl shadow-sm border border-emerald-200 hover:border-emerald-400 hover:shadow-md p-4 transition cursor-pointer group relative overflow-hidden"
-        title="Klik untuk melihat breakdown seluruh customer Eligible Good Payers"
+        title="Klik untuk melihat breakdown seluruh customer pada tier ini"
       >
         <div class="flex items-center justify-between gap-2">
           <p class="text-xs font-bold text-emerald-800 uppercase tracking-wider">Eligible Good Payers</p>
@@ -171,31 +171,31 @@
           <h3 class="text-2xl sm:text-3xl font-extrabold text-emerald-950 tabular-nums" id="kpiTotalCustomers">-</h3>
           <span class="text-xs font-semibold text-emerald-800 bg-emerald-200/70 px-2.5 py-0.5 rounded-full" id="kpiTotalContracts">- Kontrak</span>
         </div>
-        <p class="text-xs text-emerald-700/80 mt-2 font-medium" id="kpiOvdSubtext">Lolos Max OVD &lt; 30 hr &amp; Non-RP</p>
+        <p class="text-xs text-emerald-700/80 mt-2 font-medium" id="kpiOvdSubtext">Tier Max OVD 0 – 6 hr &amp; Non-RP</p>
       </button>
 
       <!-- KPI 2: AF KONTRAK (ROYAL BLUE / SKY GRADIENT) -->
       <div class="bg-gradient-to-br from-blue-50 via-sky-50/70 to-white rounded-xl shadow-sm border border-blue-200 p-4 relative overflow-hidden">
         <div class="flex items-center justify-between">
-          <p class="text-xs font-bold text-blue-800 uppercase tracking-wider">AF Kontrak (Eligible)</p>
+          <p class="text-xs font-bold text-blue-800 uppercase tracking-wider">AF Kontrak (Tier Aktif)</p>
           <span class="w-2.5 h-2.5 rounded-full bg-blue-500"></span>
         </div>
         <div class="mt-2.5">
           <h3 class="text-2xl sm:text-3xl font-extrabold text-blue-950 tabular-nums" id="kpiEligibleAfKontrak">-</h3>
         </div>
-        <p class="text-xs text-blue-700/80 mt-2 font-medium">Total pokok pembiayaan kontrak eligible</p>
+        <p class="text-xs text-blue-700/80 mt-2 font-medium">Total pokok pembiayaan tier aktif</p>
       </div>
 
       <!-- KPI 3: AF OUTSTANDING (INDIGO / VIOLET GRADIENT) -->
       <div class="bg-gradient-to-br from-indigo-50 via-violet-50/70 to-white rounded-xl shadow-sm border border-indigo-200 p-4 relative overflow-hidden">
         <div class="flex items-center justify-between">
-          <p class="text-xs font-bold text-indigo-800 uppercase tracking-wider">AF Outstanding (Eligible)</p>
+          <p class="text-xs font-bold text-indigo-800 uppercase tracking-wider">AF Outstanding (Tier Aktif)</p>
           <span class="text-xs font-bold text-indigo-800 bg-indigo-200/70 px-2 py-0.5 rounded-full" id="kpiRunoffPct">-</span>
         </div>
         <div class="mt-2.5">
           <h3 class="text-2xl sm:text-3xl font-extrabold text-indigo-950 tabular-nums" id="kpiEligibleAfOut">-</h3>
         </div>
-        <p class="text-xs text-indigo-700/80 mt-2 font-medium">Sisa pokok berjalan kontrak eligible</p>
+        <p class="text-xs text-indigo-700/80 mt-2 font-medium">Sisa pokok berjalan tier aktif</p>
       </div>
 
       <!-- KPI 4: TOTAL PENALTY (AMBER / ORANGE GRADIENT - CLICKABLE) -->
@@ -206,7 +206,7 @@
         title="Klik untuk melihat breakdown customer dengan denda / penalty"
       >
         <div class="flex items-center justify-between gap-2">
-          <p class="text-xs font-bold text-amber-800 uppercase tracking-wider">Total Penalty (Eligible)</p>
+          <p class="text-xs font-bold text-amber-800 uppercase tracking-wider">Total Penalty (Tier Aktif)</p>
           <span class="inline-flex items-center gap-1 text-[10px] font-bold text-white bg-amber-600 px-2 py-0.5 rounded-md shadow-2xs group-hover:bg-amber-700 transition">
             Rincian &rarr;
           </span>
@@ -225,10 +225,10 @@
       <div class="px-5 py-4 border-b border-slate-200 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 bg-slate-50/70">
         <div>
           <h2 class="text-base font-bold text-slate-900 flex flex-wrap items-center gap-2">
-            <span id="tableMainTitle">Top 10 Customer (Max OVD &lt; 30 Hari)</span>
+            <span id="tableMainTitle">Top 10 Customer (Max OVD &lt; 7 Hari)</span>
             <span class="text-xs font-semibold bg-emerald-100 text-emerald-800 px-2.5 py-0.5 rounded-full">Klik Nama Customer untuk Detail Kontrak</span>
           </h2>
-          <p id="tableSubTitle" class="text-xs text-slate-500 mt-0.5">Diurutkan dari Global Max OVD terendah ke terburuk • Menampilkan Total AF Kontrak (M), AF Outstanding (O), dan Penalty (AM)</p>
+          <p id="tableSubTitle" class="text-xs text-slate-500 mt-0.5">Diurutkan dari Global Max OVD terendah ke terburuk dalam tier terpilih • Menampilkan Total AF Kontrak (M), AF Outstanding (O), dan Penalty (AM)</p>
         </div>
         <div class="flex items-center gap-2">
           <button type="button" onclick="expandAllRows(true)" class="text-xs font-medium text-slate-600 hover:text-slate-900 bg-white border border-slate-300 px-2.5 py-1.5 rounded-lg shadow-2xs transition cursor-pointer">
@@ -249,7 +249,7 @@
       <!-- Empty / Diagnostic State -->
       <div id="emptyState" class="hidden p-10 text-center space-y-2">
         <p class="text-sm font-bold text-slate-800" id="emptyStateTitle">Tidak ada customer yang memenuhi kriteria filter saat ini.</p>
-        <p class="text-xs text-slate-600 max-w-2xl mx-auto leading-relaxed" id="emptyStateDesc">Coba ubah pilihan kriteria Max OVD, Contract Status, atau Product Program di atas.</p>
+        <p class="text-xs text-slate-600 max-w-2xl mx-auto leading-relaxed" id="emptyStateDesc">Coba ubah pilihan kategori Max OVD, Contract Status, atau Product Program di atas.</p>
       </div>
 
       <!-- Table Wrapper -->
@@ -297,7 +297,7 @@
             <h3 id="modalTitle" class="text-base sm:text-lg font-bold">Breakdown Data Customer</h3>
             <span id="modalBadge" class="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">0 Customer</span>
           </div>
-          <p id="modalSubtitle" class="text-xs text-slate-400 mt-0.5">Daftar lengkap customer sesuai filter aktif</p>
+          <p id="modalSubtitle" class="text-xs text-slate-400 mt-0.5">Daftar lengkap customer sesuai tier &amp; filter aktif</p>
         </div>
         <button
           type="button"
@@ -312,7 +312,7 @@
       <div class="px-6 py-3 bg-slate-50 border-b border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div class="flex flex-wrap items-center gap-1.5" id="modalModeTabs">
           <button type="button" id="tabBtnEligible" onclick="switchModalMode('eligible')" class="px-3 py-1.5 rounded-lg text-xs font-semibold transition cursor-pointer">
-            Semua Eligible
+            Semua pada Tier Ini
           </button>
           <button type="button" id="tabBtnPenalty" onclick="switchModalMode('penalty')" class="px-3 py-1.5 rounded-lg text-xs font-semibold transition cursor-pointer">
             Ada Penalty (&gt; Rp 0)
@@ -378,9 +378,37 @@
   <script>
     const SPREADSHEET_ID = '1VUCL0zZIhNrc6X3bhWJL_hIDrKnhZXJm38DPCM2YHMU';
 
+    // Definisi Bucket Tier Eksklusif agar setiap tombol menghasilkan Top 10 yang berbeda & relevan
+    const OVD_TIERS = {
+      'LT7': {
+        key: 'LT7',
+        label: 'Max OVD < 7',
+        rangeText: '0 – 6 Hari',
+        minInclusive: 0,
+        maxExclusive: 7,
+        desc: 'Prime Good Payers (0 – 6 hari), diurutkan dari 0 hari ke 6 hari lalu AF Kontrak terbesar.'
+      },
+      'LT30': {
+        key: 'LT30',
+        label: 'Max OVD < 30',
+        rangeText: '7 – 29 Hari',
+        minInclusive: 7,
+        maxExclusive: 30,
+        desc: 'Standard Good Payers (rentang 7 – 29 hari), diurutkan dari 7 hari ke 29 hari lalu AF Kontrak terbesar.'
+      },
+      'LT60': {
+        key: 'LT60',
+        label: 'Max OVD < 60',
+        rangeText: '30 – 59 Hari',
+        minInclusive: 30,
+        maxExclusive: 60,
+        desc: 'Watchlist Prospek (rentang 30 – 59 hari), diurutkan dari 30 hari ke 59 hari lalu AF Kontrak terbesar.'
+      }
+    };
+
     let rawRecords = [];
     let globalCustomerProfiles = new Map();
-    let selectedMaxOvdLimit = 30; // Default: Max OVD < 30 (pilihan: 7, 30, 60)
+    let selectedOvdTierKey = 'LT7'; // Default: Max OVD < 7 (0-6 hari)
     let selectedStatus = 'AC';
     let selectedProduct = 'ALL';
     let currentFilteredEligibleList = [];
@@ -563,24 +591,28 @@
     }
 
     function buildFilterPills() {
-      // 1. Kriteria Global Max OVD (< 7, < 30, < 60)
+      // 1. Kategori Bucket Global Max OVD (< 7, < 30 [7-29], < 60 [30-59])
       const ovdContainer = document.getElementById('ovdFilterContainer');
       ovdContainer.innerHTML = '';
 
-      const ovdOptions = [
-        { limit: 7, label: 'Max OVD < 7' },
-        { limit: 30, label: 'Max OVD < 30' },
-        { limit: 60, label: 'Max OVD < 60' }
-      ];
-
-      ovdOptions.forEach(opt => {
-        const isActive = selectedMaxOvdLimit === opt.limit;
-        ovdContainer.appendChild(createSingleSelectPill(opt.label, isActive, () => {
-          if (selectedMaxOvdLimit === opt.limit) return;
-          selectedMaxOvdLimit = opt.limit;
+      Object.values(OVD_TIERS).forEach(tier => {
+        const isActive = selectedOvdTierKey === tier.key;
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.onclick = () => {
+          if (selectedOvdTierKey === tier.key) return;
+          selectedOvdTierKey = tier.key;
           buildFilterPills();
           applyFilters();
-        }));
+        };
+
+        btn.innerHTML = `<span>${tier.label}</span> <span class="ml-1 text-[10px] opacity-80">(${tier.rangeText})</span>`;
+        if (isActive) {
+          btn.className = 'px-3 py-1.5 rounded-lg text-xs font-semibold bg-emerald-600 text-white shadow-2xs ring-2 ring-emerald-600/30 cursor-default';
+        } else {
+          btn.className = 'px-3 py-1.5 rounded-lg text-xs font-medium bg-slate-100 text-slate-600 hover:bg-slate-200 hover:text-slate-900 transition cursor-pointer';
+        }
+        ovdContainer.appendChild(btn);
       });
 
       // 2. Contract Status (AH)
@@ -660,9 +692,9 @@
       btn.textContent = text;
       btn.onclick = onClick;
       if (isActive) {
-        btn.className = 'px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-emerald-600 text-white shadow-2xs ring-2 ring-emerald-600/30 cursor-default';
+        btn.className = 'px-3 py-1.5 rounded-lg text-xs font-semibold bg-emerald-600 text-white shadow-2xs ring-2 ring-emerald-600/30 cursor-default';
       } else {
-        btn.className = 'px-3.5 py-1.5 rounded-lg text-xs font-medium bg-slate-100 text-slate-600 hover:bg-slate-200 hover:text-slate-900 transition cursor-pointer';
+        btn.className = 'px-3 py-1.5 rounded-lg text-xs font-medium bg-slate-100 text-slate-600 hover:bg-slate-200 hover:text-slate-900 transition cursor-pointer';
       }
       return btn;
     }
@@ -672,12 +704,14 @@
       applyFilters();
     }
 
-    function isProfileEligibleForCurrentOvd(profile) {
-      if (!profile) return false;
-      return (profile.globalMaxOvd < selectedMaxOvdLimit) && !profile.hasRepoHistory;
+    function isProfileInSelectedTier(profile) {
+      if (!profile || profile.hasRepoHistory) return false;
+      const tier = OVD_TIERS[selectedOvdTierKey];
+      return profile.globalMaxOvd >= tier.minInclusive && profile.globalMaxOvd < tier.maxExclusive;
     }
 
     function applyFilters() {
+      const tier = OVD_TIERS[selectedOvdTierKey];
       const searchInputEl = document.getElementById('searchInput');
       const searchQuery = searchInputEl.value.trim().toLowerCase();
       const clearBtn = document.getElementById('clearSearchBtn');
@@ -687,14 +721,15 @@
         clearBtn.classList.add('hidden');
       }
 
-      // Update label kriteria aktif di header & KPI
-      document.getElementById('headerCriteriaLabel').textContent = `Global MAX OVD < ${selectedMaxOvdLimit} Hari & Non-Repo`;
-      document.getElementById('kpiOvdSubtext').textContent = `Lolos Max OVD < ${selectedMaxOvdLimit} hr & Non-RP`;
+      // Update label kriteria aktif
+      document.getElementById('headerCriteriaLabel').textContent = `Global MAX OVD ${tier.rangeText} & Non-Repo`;
+      document.getElementById('ovdTierHelperText').innerHTML = `Menampilkan <strong class="text-slate-700">${tier.label} (${tier.rangeText})</strong> — ${tier.desc}`;
+      document.getElementById('kpiOvdSubtext').textContent = `Tier ${tier.rangeText} & Non-RP`;
 
-      // 1. Saring kontrak berdasarkan kriteria OVD terpilih & filter Status/Produk
+      // 1. Saring kontrak berdasarkan bucket tier terpilih & filter Status/Produk
       const eligibleFilteredContracts = rawRecords.filter(r => {
         const globalProfile = globalCustomerProfiles.get(r.customerKey);
-        if (!isProfileEligibleForCurrentOvd(globalProfile)) return false;
+        if (!isProfileInSelectedTier(globalProfile)) return false;
 
         const matchStatus = (selectedStatus === 'ALL') || (r.status === selectedStatus);
         const matchProduct = (selectedProduct === 'ALL') || (r.product === selectedProduct);
@@ -736,10 +771,10 @@
         }
       });
 
-      // 3. Urutkan dari Global Max OVD terendah ke terburuk dalam kategori terpilih
+      // 3. Urutkan dari Global Max OVD terendah ke terburuk di dalam bucket tier terpilih
       const allSortedEligible = Array.from(customerMap.values()).sort((a, b) => {
         if (a.globalMaxOvd !== b.globalMaxOvd) {
-          return a.globalMaxOvd - b.globalMaxOvd; // Terendah (0 hr) -> Terburuk (< limit)
+          return a.globalMaxOvd - b.globalMaxOvd; // Terendah -> Terburuk dalam tier
         }
         if (a.globalTotOvd !== b.globalTotOvd) {
           return a.globalTotOvd - b.globalTotOvd;
@@ -765,12 +800,12 @@
           const inMkt = Array.from(cust.marketings).some(m => m.toLowerCase().includes(searchQuery));
           return inName || inMkt;
         });
-        mainTitleEl.textContent = `Hasil Pencarian Max OVD < ${selectedMaxOvdLimit} (${displayedCustomers.length} dari ${allSortedEligible.length} Customer)`;
+        mainTitleEl.textContent = `Hasil Pencarian ${tier.label} (${displayedCustomers.length} dari ${allSortedEligible.length} Customer)`;
         chartTitleEl.textContent = `Perbandingan AF Kontrak vs AF Outstanding (Hasil Pencarian)`;
       } else {
         displayedCustomers = allSortedEligible.slice(0, 10);
-        mainTitleEl.textContent = `Top 10 Customer (Max OVD < ${selectedMaxOvdLimit} Hari)`;
-        chartTitleEl.textContent = `Perbandingan AF Kontrak vs AF Outstanding (Top 10 • Max OVD < ${selectedMaxOvdLimit})`;
+        mainTitleEl.textContent = `Top 10 Customer — ${tier.label} (${tier.rangeText})`;
+        chartTitleEl.textContent = `Perbandingan AF Kontrak vs AF Outstanding (Top 10 • ${tier.label})`;
       }
 
       updateKPIs(searchQuery ? displayedCustomers : allSortedEligible);
@@ -839,6 +874,7 @@
     }
 
     function renderModalTable() {
+      const tier = OVD_TIERS[selectedOvdTierKey];
       const query = document.getElementById('modalSearchInput').value.trim().toLowerCase();
       const titleEl = document.getElementById('modalTitle');
       const subtitleEl = document.getElementById('modalSubtitle');
@@ -850,15 +886,15 @@
 
       if (currentModalMode === 'penalty') {
         baseList = baseList.filter(c => c.totalPenalty > 0).sort((a, b) => b.totalPenalty - a.totalPenalty);
-        titleEl.textContent = `Breakdown Penalty (Max OVD < ${selectedMaxOvdLimit} Hari)`;
-        subtitleEl.textContent = 'Diurutkan dari nilai akumulasi penalty terbesar ke terkecil pada filter aktif';
+        titleEl.textContent = `Breakdown Penalty — ${tier.label} (${tier.rangeText})`;
+        subtitleEl.textContent = 'Diurutkan dari nilai akumulasi penalty terbesar ke terkecil pada tier aktif';
       } else if (currentModalMode === 'topup') {
         baseList = baseList.filter(c => c.avgProgressPct >= 70).sort((a, b) => b.avgProgressPct - a.avgProgressPct);
-        titleEl.textContent = `Breakdown Siap Top-Up (Max OVD < ${selectedMaxOvdLimit} Hari & Tenor ≥ 70%)`;
-        subtitleEl.textContent = 'Customer dengan progres cicilan rata-rata minimal 70%';
+        titleEl.textContent = `Breakdown Siap Top-Up — ${tier.label} (Tenor ≥ 70%)`;
+        subtitleEl.textContent = 'Customer dengan progres cicilan rata-rata minimal 70% pada tier aktif';
       } else {
-        titleEl.textContent = `Breakdown Eligible Good Payers (Max OVD < ${selectedMaxOvdLimit} Hari)`;
-        subtitleEl.textContent = `Filter Aktif: Max OVD < ${selectedMaxOvdLimit} • Status ${selectedStatus} • Produk ${selectedProduct === 'ALL' ? 'Semua Produk' : selectedProduct}`;
+        titleEl.textContent = `Breakdown Customer — ${tier.label} (${tier.rangeText})`;
+        subtitleEl.textContent = `Filter Aktif: ${tier.label} (${tier.rangeText}) • Status ${selectedStatus} • Produk ${selectedProduct === 'ALL' ? 'Semua Produk' : selectedProduct}`;
       }
 
       const filtered = baseList.filter(cust => {
@@ -945,6 +981,7 @@
     }
 
     function diagnoseMissingSearch(query) {
+      const tier = OVD_TIERS[selectedOvdTierKey];
       const matches = [];
       globalCustomerProfiles.forEach(profile => {
         if (profile.displayName.toLowerCase().includes(query)) {
@@ -958,19 +995,24 @@
 
       const details = matches.map(m => {
         const reasons = [];
-        if (m.globalMaxOvd >= selectedMaxOvdLimit) {
-          reasons.push(`Global Max OVD = ${m.globalMaxOvd} hari (melebihi batas terpilih < ${selectedMaxOvdLimit} hari)`);
-        }
         if (m.hasRepoHistory) {
           reasons.push(`memiliki riwayat kontrak berstatus RP (Repo)`);
+        }
+        if (m.globalMaxOvd < tier.minInclusive || m.globalMaxOvd >= tier.maxExclusive) {
+          let targetBucket = 'Max OVD >= 60 hari';
+          if (m.globalMaxOvd < 7) targetBucket = 'tombol "Max OVD < 7" (0–6 hari)';
+          else if (m.globalMaxOvd < 30) targetBucket = 'tombol "Max OVD < 30" (7–29 hari)';
+          else if (m.globalMaxOvd < 60) targetBucket = 'tombol "Max OVD < 60" (30–59 hari)';
+
+          reasons.push(`Global Max OVD = ${m.globalMaxOvd} hari (berada di luar rentang ${tier.rangeText}; silakan cek di ${targetBucket})`);
         }
         const statusList = Array.from(m.statuses).join(', ');
         const prodList = Array.from(m.products).join(', ');
 
         if (reasons.length > 0) {
-          return `• ${m.displayName} (${m.totalAllContracts} kontrak, Status: ${statusList}, Produk: ${prodList}) → GUGUR screening karena ${reasons.join(' & ')}.`;
+          return `• ${m.displayName} (${m.totalAllContracts} kontrak, Status: ${statusList}, Produk: ${prodList}) → Tidak tampil di tier ini karena ${reasons.join(' & ')}.`;
         } else {
-          return `• ${m.displayName} (${m.totalAllContracts} kontrak, Global Max OVD: ${m.globalMaxOvd} hr) → LOLOS Max OVD < ${selectedMaxOvdLimit}, namun tidak tampil karena filter status/produk aktif (${selectedStatus} / ${selectedProduct}) berbeda dengan kontraknya (${statusList} / ${prodList}).`;
+          return `• ${m.displayName} (${m.totalAllContracts} kontrak, Global Max OVD: ${m.globalMaxOvd} hr) → Masuk tier ${tier.label}, namun tidak tampil karena filter status/produk aktif (${selectedStatus} / ${selectedProduct}) berbeda dengan kontraknya (${statusList} / ${prodList}).`;
         }
       });
 
@@ -991,11 +1033,11 @@
         tableWrapper.classList.add('hidden');
         emptyState.classList.remove('hidden');
         if (searchQuery) {
-          emptyTitle.textContent = `Customer "${searchQuery}" tidak masuk ke daftar pada filter aktif.`;
+          emptyTitle.textContent = `Customer "${searchQuery}" tidak masuk ke daftar pada tier/filter aktif.`;
           emptyDesc.textContent = diagnoseMissingSearch(searchQuery);
         } else {
           emptyTitle.textContent = 'Tidak ada customer yang memenuhi kriteria filter saat ini.';
-          emptyDesc.textContent = 'Coba ubah pilihan kriteria Max OVD, Contract Status, atau Product Program di atas.';
+          emptyDesc.textContent = 'Coba ubah pilihan kategori Max OVD, Contract Status, atau Product Program di atas.';
         }
         return;
       }
@@ -1225,10 +1267,11 @@
       const cust = displayedCustomers[idx];
       if (!cust) return;
 
+      const tier = OVD_TIERS[selectedOvdTierKey];
       const marketingList = Array.from(cust.marketings).join(', ') || '-';
       const lines = [
-        `*PROSPEK REPEAT ORDER / TOP-UP (MAX OVD < ${selectedMaxOvdLimit} HARI)*`,
-        `Customer: *${cust.customerName}* (Rank #${cust.actualRank})`,
+        `*PROSPEK REPEAT ORDER / TOP-UP (${tier.label} • ${tier.rangeText})*`,
+        `Customer: *${cust.customerName}* (Rank #${cust.actualRank} di Tier)`,
         `Kontrak Terfilter: ${cust.contracts.length} Unit (Total Historis: ${cust.totalAllContracts} Kontrak)`,
         `Global Max OVD: ${cust.globalMaxOvd} hari (Total Global OVD: ${cust.globalTotOvd} hari • Non-Repo)`,
         `Total AF Kontrak: ${formatIDR(cust.totalAfKontrak)}`,
