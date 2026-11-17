@@ -48,11 +48,11 @@
           </span>
           <h1 class="text-lg sm:text-xl font-bold tracking-tight">Prospeksi Good Payers Dashboard</h1>
           <span class="hidden sm:inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
-            Strict Global Screening
+            Strict Screening
           </span>
         </div>
         <p class="text-xs text-slate-400 mt-1">
-          Screening Lintas-Kontrak: <span id="headerCriteriaLabel" class="text-emerald-400 font-semibold">Global MAX OVD 0 – 6 Hari &amp; Non-Repo</span> • Urutan: Global Max OVD Terendah &rarr; Terburuk (AF Kontrak Terbesar)
+          Screening Lintas-Kontrak: <span id="headerCriteriaLabel" class="text-emerald-400 font-semibold">MAX OVD 0 – 6 Hari &amp; Non-Repo</span> • Urutan: Max OVD Terendah &rarr; Terburuk (AF Kontrak Terbesar)
         </p>
       </div>
 
@@ -96,10 +96,10 @@
     <section class="bg-white rounded-xl shadow-sm border border-slate-200 p-4 sm:p-5 space-y-4">
       <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 items-end">
         
-        <!-- Filter 1: Kategori Bucket Global Max OVD (Pilih Satu) -->
+        <!-- Filter 1: Kategori Bucket Max OVD (Pilih Satu) -->
         <div class="lg:col-span-5">
           <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-2">
-            Kategori Global Max OVD <span class="text-slate-400 font-normal">(Pilih Satu Tier)</span>
+            Kategori Max OVD <span class="text-slate-400 font-normal">(Pilih Satu Tier)</span>
           </label>
           <div id="ovdFilterContainer" class="flex flex-wrap gap-1.5"></div>
         </div>
@@ -151,71 +151,91 @@
       </div>
     </section>
 
-    <!-- KPI SUMMARY CARDS -->
-    <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+    <!-- KPI SUMMARY CARDS (5 CARDS INCLUDING NPL) -->
+    <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3.5">
       
-      <!-- KPI 1: ELIGIBLE GOOD PAYERS (EMERALD / TEAL GRADIENT - CLICKABLE) -->
+      <!-- KPI 1: ELIGIBLE GOOD PAYERS (EMERALD GRADIENT - CLICKABLE) -->
       <button
         type="button"
         onclick="openKpiModal('eligible')"
         class="text-left bg-gradient-to-br from-emerald-50 via-teal-50/70 to-white rounded-xl shadow-sm border border-emerald-200 hover:border-emerald-400 hover:shadow-md p-4 transition cursor-pointer group relative overflow-hidden"
         title="Klik untuk melihat breakdown seluruh customer pada tier ini"
       >
-        <div class="flex items-center justify-between gap-2">
-          <p class="text-xs font-bold text-emerald-800 uppercase tracking-wider">Eligible Good Payers</p>
-          <span class="inline-flex items-center gap-1 text-[10px] font-bold text-white bg-emerald-600 px-2 py-0.5 rounded-md shadow-2xs group-hover:bg-emerald-700 transition">
+        <div class="flex items-center justify-between gap-1.5">
+          <p class="text-[11px] font-bold text-emerald-800 uppercase tracking-wider">Eligible Good Payers</p>
+          <span class="inline-flex items-center gap-0.5 text-[10px] font-bold text-white bg-emerald-600 px-1.5 py-0.5 rounded shadow-2xs group-hover:bg-emerald-700 transition shrink-0">
             Rincian &rarr;
           </span>
         </div>
-        <div class="mt-2.5 flex items-baseline justify-between">
-          <h3 class="text-2xl sm:text-3xl font-extrabold text-emerald-950 tabular-nums" id="kpiTotalCustomers">-</h3>
-          <span class="text-xs font-semibold text-emerald-800 bg-emerald-200/70 px-2.5 py-0.5 rounded-full" id="kpiTotalContracts">- Kontrak</span>
+        <div class="mt-2.5 flex items-baseline justify-between gap-1">
+          <h3 class="text-2xl font-extrabold text-emerald-950 tabular-nums" id="kpiTotalCustomers">-</h3>
+          <span class="text-[11px] font-semibold text-emerald-800 bg-emerald-200/70 px-2 py-0.5 rounded-full whitespace-nowrap" id="kpiTotalContracts">- Kontrak</span>
         </div>
-        <p class="text-xs text-emerald-700/80 mt-2 font-medium" id="kpiOvdSubtext">Tier Max OVD 0 – 6 hr &amp; Non-RP</p>
+        <p class="text-[11px] text-emerald-700/80 mt-2 font-medium" id="kpiOvdSubtext">Tier Max OVD 0 – 6 hr &amp; Non-RP</p>
       </button>
 
-      <!-- KPI 2: AF KONTRAK (ROYAL BLUE / SKY GRADIENT) -->
+      <!-- KPI 2: AF KONTRAK (ROYAL BLUE GRADIENT) -->
       <div class="bg-gradient-to-br from-blue-50 via-sky-50/70 to-white rounded-xl shadow-sm border border-blue-200 p-4 relative overflow-hidden">
         <div class="flex items-center justify-between">
-          <p class="text-xs font-bold text-blue-800 uppercase tracking-wider">AF Kontrak (Tier Aktif)</p>
-          <span class="w-2.5 h-2.5 rounded-full bg-blue-500"></span>
+          <p class="text-[11px] font-bold text-blue-800 uppercase tracking-wider">AF Kontrak (Tier)</p>
+          <span class="w-2 h-2 rounded-full bg-blue-500"></span>
         </div>
         <div class="mt-2.5">
-          <h3 class="text-2xl sm:text-3xl font-extrabold text-blue-950 tabular-nums" id="kpiEligibleAfKontrak">-</h3>
+          <h3 class="text-2xl font-extrabold text-blue-950 tabular-nums" id="kpiEligibleAfKontrak">-</h3>
         </div>
-        <p class="text-xs text-blue-700/80 mt-2 font-medium">Total pokok pembiayaan tier aktif</p>
+        <p class="text-[11px] text-blue-700/80 mt-2 font-medium">Pokok pembiayaan tier aktif</p>
       </div>
 
-      <!-- KPI 3: AF OUTSTANDING (INDIGO / VIOLET GRADIENT) -->
+      <!-- KPI 3: AF OUTSTANDING (INDIGO GRADIENT) -->
       <div class="bg-gradient-to-br from-indigo-50 via-violet-50/70 to-white rounded-xl shadow-sm border border-indigo-200 p-4 relative overflow-hidden">
-        <div class="flex items-center justify-between">
-          <p class="text-xs font-bold text-indigo-800 uppercase tracking-wider">AF Outstanding (Tier Aktif)</p>
-          <span class="text-xs font-bold text-indigo-800 bg-indigo-200/70 px-2 py-0.5 rounded-full" id="kpiRunoffPct">-</span>
+        <div class="flex items-center justify-between gap-1">
+          <p class="text-[11px] font-bold text-indigo-800 uppercase tracking-wider">AF Outstanding (Tier)</p>
+          <span class="text-[10px] font-bold text-indigo-800 bg-indigo-200/70 px-1.5 py-0.5 rounded-full whitespace-nowrap" id="kpiRunoffPct">-</span>
         </div>
         <div class="mt-2.5">
-          <h3 class="text-2xl sm:text-3xl font-extrabold text-indigo-950 tabular-nums" id="kpiEligibleAfOut">-</h3>
+          <h3 class="text-2xl font-extrabold text-indigo-950 tabular-nums" id="kpiEligibleAfOut">-</h3>
         </div>
-        <p class="text-xs text-indigo-700/80 mt-2 font-medium">Sisa pokok berjalan tier aktif</p>
+        <p class="text-[11px] text-indigo-700/80 mt-2 font-medium">Sisa pokok berjalan tier aktif</p>
       </div>
 
-      <!-- KPI 4: TOTAL PENALTY (AMBER / ORANGE GRADIENT - CLICKABLE) -->
+      <!-- KPI 4: TOTAL PENALTY (AMBER GRADIENT - CLICKABLE) -->
       <button
         type="button"
         onclick="openKpiModal('penalty')"
         class="text-left bg-gradient-to-br from-amber-50 via-orange-50/70 to-white rounded-xl shadow-sm border border-amber-200 hover:border-amber-400 hover:shadow-md p-4 transition cursor-pointer group relative overflow-hidden"
         title="Klik untuk melihat breakdown customer dengan denda / penalty"
       >
-        <div class="flex items-center justify-between gap-2">
-          <p class="text-xs font-bold text-amber-800 uppercase tracking-wider">Total Penalty (Tier Aktif)</p>
-          <span class="inline-flex items-center gap-1 text-[10px] font-bold text-white bg-amber-600 px-2 py-0.5 rounded-md shadow-2xs group-hover:bg-amber-700 transition">
+        <div class="flex items-center justify-between gap-1.5">
+          <p class="text-[11px] font-bold text-amber-800 uppercase tracking-wider">Total Penalty (Tier)</p>
+          <span class="inline-flex items-center gap-0.5 text-[10px] font-bold text-white bg-amber-600 px-1.5 py-0.5 rounded shadow-2xs group-hover:bg-amber-700 transition shrink-0">
             Rincian &rarr;
           </span>
         </div>
-        <div class="mt-2.5 flex items-baseline justify-between gap-2">
-          <h3 class="text-2xl sm:text-3xl font-extrabold text-amber-950 tabular-nums" id="kpiEligiblePenalty">-</h3>
-          <span class="text-xs font-semibold text-amber-800 bg-amber-200/70 px-2 py-0.5 rounded-full" id="kpiReadyTopup">- Siap Top-Up</span>
+        <div class="mt-2.5 flex items-baseline justify-between gap-1">
+          <h3 class="text-2xl font-extrabold text-amber-950 tabular-nums" id="kpiEligiblePenalty">-</h3>
+          <span class="text-[10px] font-semibold text-amber-800 bg-amber-200/70 px-2 py-0.5 rounded-full whitespace-nowrap" id="kpiReadyTopup">- Top-Up</span>
         </div>
-        <p class="text-xs text-amber-700/80 mt-2 font-medium">Klik untuk rincian denda &amp; siap top-up</p>
+        <p class="text-[11px] text-amber-700/80 mt-2 font-medium">Rincian denda &amp; siap top-up</p>
+      </button>
+
+      <!-- KPI 5: NPL PORTFOLIO (ROSE / RED GRADIENT - CLICKABLE) -->
+      <button
+        type="button"
+        onclick="openNplModal()"
+        class="text-left bg-gradient-to-br from-rose-50 via-red-50/70 to-white rounded-xl shadow-sm border border-rose-200 hover:border-rose-400 hover:shadow-md p-4 transition cursor-pointer group relative overflow-hidden"
+        title="Klik untuk melihat breakdown kontrak/debitur NPL (OVD Days > 90)"
+      >
+        <div class="flex items-center justify-between gap-1.5">
+          <p class="text-[11px] font-bold text-rose-800 uppercase tracking-wider">NPL Portfolio (&gt;90 Hr)</p>
+          <span class="inline-flex items-center gap-0.5 text-[10px] font-bold text-white bg-rose-600 px-1.5 py-0.5 rounded shadow-2xs group-hover:bg-rose-700 transition shrink-0">
+            Rincian &rarr;
+          </span>
+        </div>
+        <div class="mt-2.5 flex items-baseline justify-between gap-1">
+          <h3 class="text-2xl font-extrabold text-rose-950 tabular-nums" id="kpiNplAmount">-</h3>
+          <span class="text-[11px] font-extrabold text-rose-800 bg-rose-200/80 px-2 py-0.5 rounded-full whitespace-nowrap" id="kpiNplRatio">0,00%</span>
+        </div>
+        <p class="text-[11px] text-rose-700/80 mt-2 font-medium" id="kpiNplSubtext">0 Kontrak Aktif OVD &gt; 90 hr</p>
       </button>
 
     </section>
@@ -228,7 +248,7 @@
             <span id="tableMainTitle">Top 10 Customer (Max OVD &lt; 7 Hari)</span>
             <span class="text-xs font-semibold bg-emerald-100 text-emerald-800 px-2.5 py-0.5 rounded-full">Klik Nama Customer untuk Detail Kontrak</span>
           </h2>
-          <p id="tableSubTitle" class="text-xs text-slate-500 mt-0.5">Diurutkan dari Global Max OVD terendah ke terburuk dalam tier terpilih • Menampilkan Total AF Kontrak (M), AF Outstanding (O), dan Penalty (AM)</p>
+          <p id="tableSubTitle" class="text-xs text-slate-500 mt-0.5">Diurutkan dari Max OVD terendah ke terburuk dalam tier terpilih • Menampilkan Total AF Kontrak (M), AF Outstanding (O), dan Penalty (AM)</p>
         </div>
         <div class="flex items-center gap-2">
           <button type="button" onclick="expandAllRows(true)" class="text-xs font-medium text-slate-600 hover:text-slate-900 bg-white border border-slate-300 px-2.5 py-1.5 rounded-lg shadow-2xs transition cursor-pointer">
@@ -259,7 +279,7 @@
             <tr class="bg-slate-100/80 border-b border-slate-200 text-[11px] font-bold uppercase tracking-wider text-slate-600">
               <th class="py-3.5 pl-5 pr-2 w-14 text-center">Rank</th>
               <th class="py-3.5 px-3">Nama Customer</th>
-              <th class="py-3.5 px-3 text-center">Global Max OVD</th>
+              <th class="py-3.5 px-3 text-center">Max OVD</th>
               <th class="py-3.5 px-3 text-right">Total AF Kontrak</th>
               <th class="py-3.5 px-3 text-right">Total AF Outstanding</th>
               <th class="py-3.5 px-3 text-right">Denda / Penalty</th>
@@ -370,6 +390,80 @@
     </div>
   </div>
 
+  <!-- MODAL BREAKDOWN NPL (OVD DAYS > 90) -->
+  <div id="nplBreakdownModal" class="hidden fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl shadow-2xl border border-slate-200 w-full max-w-5xl max-h-[88vh] flex flex-col overflow-hidden">
+      
+      <!-- Modal Header -->
+      <div class="px-6 py-4 bg-rose-950 text-white flex items-center justify-between gap-4">
+        <div>
+          <div class="flex items-center gap-2">
+            <h3 class="text-base sm:text-lg font-bold">Breakdown Kontrak NPL (OVD Days &gt; 90 Hari)</h3>
+            <span id="nplModalBadge" class="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-rose-500/20 text-rose-200 border border-rose-500/30">0 Kontrak</span>
+          </div>
+          <p id="nplModalSubtitle" class="text-xs text-rose-200/80 mt-0.5">Basis Pokok (AFOUT) pada Kontrak Aktif (AC) dengan OVD_DAYS &gt; 90 hari</p>
+        </div>
+        <button
+          type="button"
+          onclick="closeNplModal()"
+          class="w-8 h-8 rounded-lg bg-rose-900 hover:bg-rose-800 text-rose-200 hover:text-white flex items-center justify-center transition cursor-pointer"
+        >
+          ✕
+        </button>
+      </div>
+
+      <!-- Search Bar -->
+      <div class="px-6 py-3 bg-rose-50/60 border-b border-rose-100 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <div class="text-xs text-rose-900 font-medium" id="nplModalFormulaInfo">
+          Rasio NPL = Total AFOUT NPL / Total AFOUT Aktif
+        </div>
+        <div class="relative w-full sm:w-64">
+          <input
+            type="text"
+            id="nplSearchInput"
+            oninput="renderNplModalTable()"
+            placeholder="Cari customer / no kontrak / AO..."
+            class="w-full pl-8 pr-3 py-1.5 text-xs bg-white border border-rose-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-rose-500"
+          />
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 text-slate-400 absolute left-2.5 top-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+          </svg>
+        </div>
+      </div>
+
+      <!-- Modal Table Body -->
+      <div class="flex-1 overflow-auto">
+        <table class="w-full text-left border-collapse">
+          <thead class="sticky top-0 bg-slate-100 border-b border-slate-200 text-[11px] font-bold uppercase tracking-wider text-slate-600 z-10">
+            <tr>
+              <th class="py-3 pl-6 pr-2 w-12 text-center">No</th>
+              <th class="py-3 px-3">Customer &amp; No. Kontrak</th>
+              <th class="py-3 px-3">Unit (BTM) &amp; Produk</th>
+              <th class="py-3 px-3 text-center">OVD Days</th>
+              <th class="py-3 px-3">Kolektibilitas</th>
+              <th class="py-3 px-3">Marketing (AO)</th>
+              <th class="py-3 pl-3 pr-6 text-right">AF Outstanding</th>
+            </tr>
+          </thead>
+          <tbody id="nplModalTableBody" class="divide-y divide-slate-200 text-xs"></tbody>
+        </table>
+      </div>
+
+      <!-- Modal Footer -->
+      <div class="px-6 py-3 bg-slate-50 border-t border-slate-200 flex flex-wrap items-center justify-between gap-2 text-xs text-slate-600">
+        <span id="nplModalFooterSummary">Menampilkan 0 kontrak NPL</span>
+        <button
+          type="button"
+          onclick="closeNplModal()"
+          class="px-4 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-white font-semibold transition cursor-pointer"
+        >
+          Tutup
+        </button>
+      </div>
+
+    </div>
+  </div>
+
   <!-- TOAST NOTIFICATION -->
   <div id="toast" class="fixed bottom-5 right-5 bg-slate-900 text-white text-xs font-medium px-4 py-2.5 rounded-lg shadow-lg opacity-0 pointer-events-none transition-opacity duration-300 z-50">
     Ringkasan prospek berhasil disalin!
@@ -378,7 +472,6 @@
   <script>
     const SPREADSHEET_ID = '1VUCL0zZIhNrc6X3bhWJL_hIDrKnhZXJm38DPCM2YHMU';
 
-    // Definisi Bucket Tier Eksklusif agar setiap tombol menghasilkan Top 10 yang berbeda & relevan
     const OVD_TIERS = {
       'LT7': {
         key: 'LT7',
@@ -408,10 +501,12 @@
 
     let rawRecords = [];
     let globalCustomerProfiles = new Map();
-    let selectedOvdTierKey = 'LT7'; // Default: Max OVD < 7 (0-6 hari)
+    let selectedOvdTierKey = 'LT7';
     let selectedStatus = 'AC';
     let selectedProduct = 'ALL';
     let currentFilteredEligibleList = [];
+    let currentNplContractsList = [];
+    let currentTotalActiveAfOut = 0;
     let displayedCustomers = [];
     let currentModalMode = 'eligible';
     let chartInstance = null;
@@ -522,8 +617,9 @@
           const afOut = parseCleanNumber(getVal(14));
           const instKe = parseCleanNumber(getVal(19));
           const tenor = parseCleanNumber(getVal(21));
-          const maxOvd = Math.max(0, parseCleanNumber(getVal(25)));
-          const totOvd = Math.max(0, parseCleanNumber(getVal(26)));
+          const ovdDays = Math.max(0, parseCleanNumber(getVal(24))); // Kolom Y: OVD_DAYS berjalan
+          const maxOvd = Math.max(0, parseCleanNumber(getVal(25)));  // Kolom Z: MAX_OVD historis
+          const totOvd = Math.max(0, parseCleanNumber(getVal(26)));  // Kolom AA: TOT_OVD
           const penAmt = parseCleanNumber(getVal(38));
           const supplier = String(getVal(46)).trim() || '-';
           const marketing = String(getVal(49)).trim() || '-';
@@ -539,6 +635,7 @@
             afOut,
             instKe,
             tenor,
+            ovdDays,
             maxOvd,
             totOvd,
             status,
@@ -591,7 +688,6 @@
     }
 
     function buildFilterPills() {
-      // 1. Kategori Bucket Global Max OVD (< 7, < 30 [7-29], < 60 [30-59])
       const ovdContainer = document.getElementById('ovdFilterContainer');
       ovdContainer.innerHTML = '';
 
@@ -615,7 +711,6 @@
         ovdContainer.appendChild(btn);
       });
 
-      // 2. Contract Status (AH)
       const statusCounts = {};
       rawRecords.forEach(r => {
         statusCounts[r.status] = (statusCounts[r.status] || 0) + 1;
@@ -651,7 +746,6 @@
         }));
       });
 
-      // 3. Product Program (F)
       const productCounts = {};
       rawRecords.forEach(r => {
         productCounts[r.product] = (productCounts[r.product] || 0) + 1;
@@ -721,12 +815,32 @@
         clearBtn.classList.add('hidden');
       }
 
-      // Update label kriteria aktif
-      document.getElementById('headerCriteriaLabel').textContent = `Global MAX OVD ${tier.rangeText} & Non-Repo`;
+      document.getElementById('headerCriteriaLabel').textContent = `MAX OVD ${tier.rangeText} & Non-Repo`;
       document.getElementById('ovdTierHelperText').innerHTML = `Menampilkan <strong class="text-slate-700">${tier.label} (${tier.rangeText})</strong> — ${tier.desc}`;
       document.getElementById('kpiOvdSubtext').textContent = `Tier ${tier.rangeText} & Non-RP`;
 
-      // 1. Saring kontrak berdasarkan bucket tier terpilih & filter Status/Produk
+      // Hitung Portfolio NPL (Kontrak Aktif AC sesuai filter Produk dengan OVD_DAYS > 90)
+      const activePortfolioContracts = rawRecords.filter(r => {
+        const isAct = r.status === 'AC';
+        const matchProd = (selectedProduct === 'ALL') || (r.product === selectedProduct);
+        return isAct && matchProd;
+      });
+
+      currentTotalActiveAfOut = activePortfolioContracts.reduce((acc, r) => acc + r.afOut, 0);
+      currentNplContractsList = activePortfolioContracts
+        .filter(r => r.ovdDays > 90)
+        .sort((a, b) => b.afOut - a.afOut);
+
+      const nplAfOut = currentNplContractsList.reduce((acc, r) => acc + r.afOut, 0);
+      const nplRatioPct = currentTotalActiveAfOut > 0
+        ? ((nplAfOut / currentTotalActiveAfOut) * 100).toFixed(2).replace('.', ',')
+        : '0,00';
+
+      document.getElementById('kpiNplAmount').textContent = formatCompactIDR(nplAfOut);
+      document.getElementById('kpiNplRatio').textContent = `${nplRatioPct}%`;
+      document.getElementById('kpiNplSubtext').textContent = `${currentNplContractsList.length.toLocaleString('id-ID')} Kontrak Aktif OVD > 90 hr`;
+
+      // Saring kontrak Good Payers berdasarkan bucket tier terpilih & filter Status/Produk
       const eligibleFilteredContracts = rawRecords.filter(r => {
         const globalProfile = globalCustomerProfiles.get(r.customerKey);
         if (!isProfileInSelectedTier(globalProfile)) return false;
@@ -736,7 +850,6 @@
         return matchStatus && matchProduct;
       });
 
-      // 2. Agregasi customer
       const customerMap = new Map();
 
       eligibleFilteredContracts.forEach(c => {
@@ -771,10 +884,9 @@
         }
       });
 
-      // 3. Urutkan dari Global Max OVD terendah ke terburuk di dalam bucket tier terpilih
       const allSortedEligible = Array.from(customerMap.values()).sort((a, b) => {
         if (a.globalMaxOvd !== b.globalMaxOvd) {
-          return a.globalMaxOvd - b.globalMaxOvd; // Terendah -> Terburuk dalam tier
+          return a.globalMaxOvd - b.globalMaxOvd;
         }
         if (a.globalTotOvd !== b.globalTotOvd) {
           return a.globalTotOvd - b.globalTotOvd;
@@ -833,7 +945,7 @@
       document.getElementById('kpiEligibleAfOut').textContent = formatCompactIDR(eligibleAfOut);
       document.getElementById('kpiRunoffPct').textContent = `Lunas ${paidPrincipalPct}%`;
       document.getElementById('kpiEligiblePenalty').textContent = formatCompactIDR(eligiblePenalty);
-      document.getElementById('kpiReadyTopup').textContent = `${readyTopupCount} Siap Top-Up`;
+      document.getElementById('kpiReadyTopup').textContent = `${readyTopupCount} Top-Up`;
     }
 
     // ==========================================
@@ -980,6 +1092,103 @@
       document.getElementById('tableWrapper').scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
 
+    // ==========================================
+    // MODAL BREAKDOWN NPL (OVD DAYS > 90)
+    // ==========================================
+    function openNplModal() {
+      document.getElementById('nplSearchInput').value = '';
+      document.getElementById('nplBreakdownModal').classList.remove('hidden');
+      document.body.style.overflow = 'hidden';
+      renderNplModalTable();
+    }
+
+    function closeNplModal() {
+      document.getElementById('nplBreakdownModal').classList.add('hidden');
+      document.body.style.overflow = '';
+    }
+
+    function getKolBadge(ovdDays) {
+      if (ovdDays > 180) {
+        return '<span class="px-2 py-0.5 rounded text-[10px] font-bold bg-rose-200 text-rose-900">Kol-5 (Macet)</span>';
+      } else if (ovdDays > 120) {
+        return '<span class="px-2 py-0.5 rounded text-[10px] font-bold bg-orange-200 text-orange-900">Kol-4 (Diragukan)</span>';
+      }
+      return '<span class="px-2 py-0.5 rounded text-[10px] font-bold bg-amber-200 text-amber-900">Kol-3 (Kurang Lancar)</span>';
+    }
+
+    function renderNplModalTable() {
+      const query = document.getElementById('nplSearchInput').value.trim().toLowerCase();
+      const badgeEl = document.getElementById('nplModalBadge');
+      const formulaEl = document.getElementById('nplModalFormulaInfo');
+      const tbody = document.getElementById('nplModalTableBody');
+      const footerEl = document.getElementById('nplModalFooterSummary');
+
+      const totalNplAfOut = currentNplContractsList.reduce((acc, r) => acc + r.afOut, 0);
+      const ratioStr = currentTotalActiveAfOut > 0
+        ? ((totalNplAfOut / currentTotalActiveAfOut) * 100).toFixed(2).replace('.', ',')
+        : '0,00';
+
+      formulaEl.textContent = `NPL Pokok: ${formatCompactIDR(totalNplAfOut)} dari Total AFOUT Aktif: ${formatCompactIDR(currentTotalActiveAfOut)} (Rasio NPL: ${ratioStr}%)`;
+
+      const filtered = currentNplContractsList.filter(ct => {
+        if (!query) return true;
+        return ct.customerName.toLowerCase().includes(query) ||
+               ct.noKontrak.toLowerCase().includes(query) ||
+               ct.marketing.toLowerCase().includes(query) ||
+               ct.btm.toLowerCase().includes(query);
+      });
+
+      badgeEl.textContent = `${filtered.length} Kontrak NPL`;
+      tbody.innerHTML = '';
+
+      if (filtered.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="7" class="py-10 text-center text-slate-500">
+              Tidak ada kontrak aktif dengan OVD Days &gt; 90 hari pada filter produk ini.
+            </td>
+          </tr>
+        `;
+        footerEl.textContent = 'Menampilkan 0 kontrak NPL';
+        return;
+      }
+
+      const filteredAfOut = filtered.reduce((acc, r) => acc + r.afOut, 0);
+
+      filtered.forEach((ct, idx) => {
+        const tr = document.createElement('tr');
+        tr.className = 'hover:bg-rose-50/40 transition';
+        tr.innerHTML = `
+          <td class="py-3 pl-6 pr-2 text-center font-bold text-slate-600 tabular-nums">${idx + 1}</td>
+          <td class="py-3 px-3">
+            <div class="font-bold text-slate-900">${escapeHtml(ct.customerName)}</div>
+            <div class="text-[11px] font-mono text-slate-500">${escapeHtml(ct.noKontrak)}</div>
+          </td>
+          <td class="py-3 px-3">
+            <div class="font-semibold text-slate-800">${escapeHtml(ct.btm)}</div>
+            <div class="text-[11px] text-slate-500">Produk: ${escapeHtml(ct.product)} • Angsuran: ${ct.instKe}/${ct.tenor}</div>
+          </td>
+          <td class="py-3 px-3 text-center tabular-nums">
+            <span class="px-2 py-0.5 rounded-full text-[11px] font-bold bg-rose-100 text-rose-800 border border-rose-200">
+              ${ct.ovdDays} hr
+            </span>
+          </td>
+          <td class="py-3 px-3">
+            ${getKolBadge(ct.ovdDays)}
+          </td>
+          <td class="py-3 px-3 font-medium text-slate-700">
+            ${escapeHtml(ct.marketing)}
+          </td>
+          <td class="py-3 pl-3 pr-6 text-right font-bold text-rose-800 tabular-nums whitespace-nowrap">
+            ${formatIDR(ct.afOut)}
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+
+      footerEl.textContent = `Menampilkan ${filtered.length} kontrak NPL • Total AF Outstanding NPL: ${formatIDR(filteredAfOut)}`;
+    }
+
     function diagnoseMissingSearch(query) {
       const tier = OVD_TIERS[selectedOvdTierKey];
       const matches = [];
@@ -1004,7 +1213,7 @@
           else if (m.globalMaxOvd < 30) targetBucket = 'tombol "Max OVD < 30" (7–29 hari)';
           else if (m.globalMaxOvd < 60) targetBucket = 'tombol "Max OVD < 60" (30–59 hari)';
 
-          reasons.push(`Global Max OVD = ${m.globalMaxOvd} hari (berada di luar rentang ${tier.rangeText}; silakan cek di ${targetBucket})`);
+          reasons.push(`Max OVD = ${m.globalMaxOvd} hari (berada di luar rentang ${tier.rangeText}; silakan cek di ${targetBucket})`);
         }
         const statusList = Array.from(m.statuses).join(', ');
         const prodList = Array.from(m.products).join(', ');
@@ -1012,7 +1221,7 @@
         if (reasons.length > 0) {
           return `• ${m.displayName} (${m.totalAllContracts} kontrak, Status: ${statusList}, Produk: ${prodList}) → Tidak tampil di tier ini karena ${reasons.join(' & ')}.`;
         } else {
-          return `• ${m.displayName} (${m.totalAllContracts} kontrak, Global Max OVD: ${m.globalMaxOvd} hr) → Masuk tier ${tier.label}, namun tidak tampil karena filter status/produk aktif (${selectedStatus} / ${selectedProduct}) berbeda dengan kontraknya (${statusList} / ${prodList}).`;
+          return `• ${m.displayName} (${m.totalAllContracts} kontrak, Max OVD: ${m.globalMaxOvd} hr) → Masuk tier ${tier.label}, namun tidak tampil karena filter status/produk aktif (${selectedStatus} / ${selectedProduct}) berbeda dengan kontraknya (${statusList} / ${prodList}).`;
         }
       });
 
@@ -1099,7 +1308,7 @@
             <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold border ${ovdBadgeClass} tabular-nums">
               ${cust.globalMaxOvd} hari
             </span>
-            <div class="text-[11px] text-slate-400 mt-0.5 tabular-nums">Tot Global: ${cust.globalTotOvd} hr</div>
+            <div class="text-[11px] text-slate-400 mt-0.5 tabular-nums">Total OVD: ${cust.globalTotOvd} hr</div>
           </td>
           <td class="py-4 px-3 text-right font-semibold text-slate-900 tabular-nums whitespace-nowrap">
             ${formatIDR(cust.totalAfKontrak)}
@@ -1188,7 +1397,7 @@
                   </div>
                   <span class="text-slate-600">|</span>
                   <div>
-                    <span class="text-slate-400">Global Max OVD:</span>
+                    <span class="text-slate-400">Max OVD:</span>
                     <span class="font-semibold text-emerald-400 ml-1">${cust.globalMaxOvd} Hari (Non-Repo)</span>
                   </div>
                 </div>
@@ -1273,7 +1482,7 @@
         `*PROSPEK REPEAT ORDER / TOP-UP (${tier.label} • ${tier.rangeText})*`,
         `Customer: *${cust.customerName}* (Rank #${cust.actualRank} di Tier)`,
         `Kontrak Terfilter: ${cust.contracts.length} Unit (Total Historis: ${cust.totalAllContracts} Kontrak)`,
-        `Global Max OVD: ${cust.globalMaxOvd} hari (Total Global OVD: ${cust.globalTotOvd} hari • Non-Repo)`,
+        `Max OVD: ${cust.globalMaxOvd} hari (Total OVD: ${cust.globalTotOvd} hari • Non-Repo)`,
         `Total AF Kontrak: ${formatIDR(cust.totalAfKontrak)}`,
         `Total AF Outstanding: ${formatIDR(cust.totalAfOut)}`,
         `Marketing (AO): ${marketingList}`,
@@ -1380,7 +1589,10 @@
     }
 
     window.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape') closeKpiModal();
+      if (e.key === 'Escape') {
+        closeKpiModal();
+        closeNplModal();
+      }
     });
 
     window.addEventListener('DOMContentLoaded', loadSheetData);
