@@ -39,21 +39,16 @@
   <!-- TOP NAVBAR -->
   <header class="bg-slate-900 text-white sticky top-0 z-30 shadow-md border-b border-slate-800">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-      <div>
-        <div class="flex items-center gap-2.5">
-          <span class="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-              <path fill-rule="evenodd" d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
-            </svg>
-          </span>
-          <h1 class="text-lg sm:text-xl font-bold tracking-tight">Prospeksi Good Payers Dashboard</h1>
-          <span class="hidden sm:inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
-            Strict Screening
-          </span>
-        </div>
-        <p class="text-xs text-slate-400 mt-1">
-          Screening Lintas-Kontrak: <span id="headerCriteriaLabel" class="text-emerald-400 font-semibold">MAX OVD 0 – 6 Hari &amp; Non-Repo</span> • Urutan: Max OVD Terendah &rarr; Terburuk (AF Kontrak Terbesar)
-        </p>
+      <div class="flex items-center gap-2.5">
+        <span class="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+          </svg>
+        </span>
+        <h1 class="text-lg sm:text-xl font-bold tracking-tight">Prospeksi Good Payers Dashboard</h1>
+        <span class="hidden sm:inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+          Strict Screening
+        </span>
       </div>
 
       <div class="flex items-center gap-2.5">
@@ -104,18 +99,18 @@
           <div id="ovdFilterContainer" class="flex flex-wrap gap-1.5"></div>
         </div>
 
-        <!-- Filter 2: Contract Status (Kolom AH - Single Select) -->
+        <!-- Filter 2: Contract Status -->
         <div class="lg:col-span-4">
           <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-2">
-            Contract Status Tampilan <span class="text-slate-400 font-normal">(Kolom AH)</span>
+            Contract Status Tampilan
           </label>
           <div id="statusFilterContainer" class="flex flex-wrap gap-1.5"></div>
         </div>
 
-        <!-- Filter 3: Product Program (Kolom F / OBJ - Single Select) -->
+        <!-- Filter 3: Product Program -->
         <div class="lg:col-span-3">
           <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-2">
-            Product Program <span class="text-slate-400 font-normal">(Kolom F)</span>
+            Product Program
           </label>
           <div id="productFilterContainer" class="flex flex-wrap gap-1.5"></div>
         </div>
@@ -248,7 +243,7 @@
             <span id="tableMainTitle">Top 10 Customer (Max OVD &lt; 7 Hari)</span>
             <span class="text-xs font-semibold bg-emerald-100 text-emerald-800 px-2.5 py-0.5 rounded-full">Klik Nama Customer untuk Detail Kontrak</span>
           </h2>
-          <p id="tableSubTitle" class="text-xs text-slate-500 mt-0.5">Diurutkan dari Max OVD terendah ke terburuk dalam tier terpilih • Menampilkan Total AF Kontrak (M), AF Outstanding (O), dan Penalty (AM)</p>
+          <p id="tableSubTitle" class="text-xs text-slate-500 mt-0.5">Diurutkan dari Max OVD terendah ke terburuk dalam tier terpilih</p>
         </div>
         <div class="flex items-center gap-2">
           <button type="button" onclick="expandAllRows(true)" class="text-xs font-medium text-slate-600 hover:text-slate-900 bg-white border border-slate-300 px-2.5 py-1.5 rounded-lg shadow-2xs transition cursor-pointer">
@@ -263,7 +258,7 @@
       <!-- Loading State -->
       <div id="loadingState" class="p-12 text-center">
         <div class="inline-block animate-spin rounded-full h-8 w-8 border-4 border-slate-200 border-t-emerald-600 mb-3"></div>
-        <p class="text-sm font-medium text-slate-600">Menghubungkan &amp; memproses screening lintas-kontrak dari Google Sheet...</p>
+        <p class="text-sm font-medium text-slate-600">Menghubungkan &amp; memproses data dari Google Sheet...</p>
       </div>
 
       <!-- Empty / Diagnostic State -->
@@ -617,9 +612,9 @@
           const afOut = parseCleanNumber(getVal(14));
           const instKe = parseCleanNumber(getVal(19));
           const tenor = parseCleanNumber(getVal(21));
-          const ovdDays = Math.max(0, parseCleanNumber(getVal(24))); // Kolom Y: OVD_DAYS berjalan
-          const maxOvd = Math.max(0, parseCleanNumber(getVal(25)));  // Kolom Z: MAX_OVD historis
-          const totOvd = Math.max(0, parseCleanNumber(getVal(26)));  // Kolom AA: TOT_OVD
+          const ovdDays = Math.max(0, parseCleanNumber(getVal(24)));
+          const maxOvd = Math.max(0, parseCleanNumber(getVal(25)));
+          const totOvd = Math.max(0, parseCleanNumber(getVal(26)));
           const penAmt = parseCleanNumber(getVal(38));
           const supplier = String(getVal(46)).trim() || '-';
           const marketing = String(getVal(49)).trim() || '-';
@@ -815,7 +810,6 @@
         clearBtn.classList.add('hidden');
       }
 
-      document.getElementById('headerCriteriaLabel').textContent = `MAX OVD ${tier.rangeText} & Non-Repo`;
       document.getElementById('ovdTierHelperText').innerHTML = `Menampilkan <strong class="text-slate-700">${tier.label} (${tier.rangeText})</strong> — ${tier.desc}`;
       document.getElementById('kpiOvdSubtext').textContent = `Tier ${tier.rangeText} & Non-RP`;
 
@@ -1420,10 +1414,10 @@
                   <thead>
                     <tr class="bg-slate-100 text-[10px] font-bold uppercase tracking-wider text-slate-600 border-b border-slate-200">
                       <th class="py-2.5 px-3">No. Kontrak &amp; Status</th>
-                      <th class="py-2.5 px-3">Brand / BTM (Kolom G)</th>
-                      <th class="py-2.5 px-3 w-48">Tenor Berjalan (T / V)</th>
+                      <th class="py-2.5 px-3">Brand / BTM</th>
+                      <th class="py-2.5 px-3 w-48">Tenor Berjalan</th>
                       <th class="py-2.5 px-3">Nama Marketing (AO)</th>
-                      <th class="py-2.5 px-3">Nama Supplier (AU)</th>
+                      <th class="py-2.5 px-3">Nama Supplier</th>
                       <th class="py-2.5 px-3 text-right">AF Kontrak &amp; Out</th>
                     </tr>
                   </thead>
