@@ -117,7 +117,7 @@
 
       </div>
 
-      <!-- Search Customer / Marketing -->
+      <!-- Search Customer / Marketing / CA -->
       <div class="pt-3 border-t border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <p class="text-xs text-slate-500" id="ovdTierHelperText">
           Menampilkan <strong class="text-slate-700">Prime Good Payers (0 – 6 hari)</strong>, diurutkan dari 0 hari ke 6 hari lalu AF Kontrak terbesar.
@@ -127,7 +127,7 @@
             type="text"
             id="searchInput"
             oninput="applyFilters()"
-            placeholder="Cari nama PT / Customer / AO..."
+            placeholder="Cari nama PT / Customer / AO / CA..."
             class="w-full pl-9 pr-8 py-2 text-sm bg-slate-50 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
           />
           <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-slate-400 absolute left-3 top-2.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -361,7 +361,7 @@
             type="text"
             id="modalSearchInput"
             oninput="renderModalTable()"
-            placeholder="Filter nama customer / AO..."
+            placeholder="Filter nama customer / AO / CA..."
             class="w-full pl-8 pr-3 py-1.5 text-xs bg-white border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500"
           />
           <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 text-slate-400 absolute left-2.5 top-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -376,7 +376,7 @@
           <thead class="sticky top-0 bg-slate-100 border-b border-slate-200 text-[11px] font-bold uppercase tracking-wider text-slate-600 z-10">
             <tr>
               <th class="py-3 pl-6 pr-2 w-14 text-center">Rank</th>
-              <th class="py-3 px-3">Nama Customer &amp; AO</th>
+              <th class="py-3 px-3">Nama Customer, AO &amp; CA</th>
               <th class="py-3 px-3 text-center">Kontrak</th>
               <th class="py-3 px-3 text-center">Max OVD</th>
               <th class="py-3 px-3 text-right">AF Kontrak</th>
@@ -436,7 +436,7 @@
             type="text"
             id="nplSearchInput"
             oninput="renderNplModalTable()"
-            placeholder="Cari customer / no kontrak / AO..."
+            placeholder="Cari customer / no kontrak / AO / CA..."
             class="w-full pl-8 pr-3 py-1.5 text-xs bg-white border border-rose-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-rose-500"
           />
           <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 text-slate-400 absolute left-2.5 top-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -455,7 +455,7 @@
               <th class="py-3 px-3">Unit (BTM) &amp; Produk</th>
               <th class="py-3 px-3 text-center">OVD Days</th>
               <th class="py-3 px-3">Kolektibilitas</th>
-              <th class="py-3 px-3">Marketing (AO)</th>
+              <th class="py-3 px-3">AO &amp; CA</th>
               <th class="py-3 pl-3 pr-6 text-right">AF Outstanding</th>
             </tr>
           </thead>
@@ -644,7 +644,8 @@
           const totOvd = Math.max(0, parseCleanNumber(getVal(26)));
           const penAmt = parseCleanNumber(getVal(38));
           const supplier = String(getVal(46)).trim() || '-';
-          const marketing = String(getVal(49)).trim() || '-';
+          const marketing = String(getVal(49)).trim() || '-'; // Kolom AX (indeks 49)
+          const ca = String(getVal(50)).trim() || '-';        // Kolom AY (indeks 50)
 
           rawRecords.push({
             noKontrak,
@@ -663,7 +664,8 @@
             status,
             penAmt,
             supplier,
-            marketing
+            marketing,
+            ca
           });
         });
 
@@ -851,7 +853,6 @@
         clearBtn.classList.add('hidden');
       }
 
-      // Update badge navbar & teks subjudul KPI sesuai mode Strict Screening vs All OVD
       const badgeNav = document.getElementById('screeningModeBadge');
       if (isAllOvd) {
         badgeNav.textContent = 'All OVD Mode';
@@ -877,7 +878,6 @@
 
       document.getElementById('ovdTierHelperText').innerHTML = `Menampilkan <strong class="text-slate-700">${tier.label} (${tier.rangeText})</strong> — ${tier.desc}`;
 
-      // Hitung Portfolio All OVD Aktif (AC sesuai filter Produk) & NPL (OVD_DAYS > 90)
       const activePortfolioContracts = rawRecords.filter(r => {
         const isAct = r.status === 'AC';
         const matchProd = (selectedProduct === 'ALL') || (r.product === selectedProduct);
@@ -901,7 +901,6 @@
       document.getElementById('kpiNplRatio').textContent = `${nplRatioPct}%`;
       document.getElementById('kpiNplSubtext').textContent = `${currentNplContractsList.length.toLocaleString('id-ID')} Kontrak Aktif OVD > 90 hr`;
 
-      // Saring kontrak berdasarkan bucket tier terpilih (atau All OVD) & filter Status/Produk
       const eligibleFilteredContracts = rawRecords.filter(r => {
         const globalProfile = globalCustomerProfiles.get(r.customerKey);
         if (!isProfileInSelectedTier(globalProfile)) return false;
@@ -928,7 +927,8 @@
             totalPenalty: 0,
             sumProgressRatio: 0,
             validTenorCount: 0,
-            marketings: new Set()
+            marketings: new Set(),
+            cas: new Set()
           });
         }
 
@@ -938,6 +938,7 @@
         cust.totalAfOut += c.afOut;
         cust.totalPenalty += c.penAmt;
         if (c.marketing && c.marketing !== '-') cust.marketings.add(c.marketing);
+        if (c.ca && c.ca !== '-') cust.cas.add(c.ca);
 
         if (c.tenor > 0) {
           const ratio = Math.min(c.instKe / c.tenor, 1);
@@ -948,7 +949,6 @@
 
       const allSortedEligible = Array.from(customerMap.values()).sort((a, b) => {
         if (isAllOvd) {
-          // Pada mode All OVD, urutkan berdasarkan AF Kontrak terbesar agar debitur utama langsung terlihat
           if (b.totalAfKontrak !== a.totalAfKontrak) {
             return b.totalAfKontrak - a.totalAfKontrak;
           }
@@ -984,7 +984,8 @@
         displayedCustomers = allSortedEligible.filter(cust => {
           const inName = cust.customerName.toLowerCase().includes(searchQuery);
           const inMkt = Array.from(cust.marketings).some(m => m.toLowerCase().includes(searchQuery));
-          return inName || inMkt;
+          const inCa = Array.from(cust.cas).some(ca => ca.toLowerCase().includes(searchQuery));
+          return inName || inMkt || inCa;
         });
         mainTitleEl.textContent = `Hasil Pencarian ${tier.label} (${displayedCustomers.length} dari ${allSortedEligible.length} Customer)`;
         chartTitleEl.textContent = `Perbandingan AF Kontrak vs AF Outstanding (Hasil Pencarian)`;
@@ -1087,7 +1088,8 @@
         if (!query) return true;
         const inName = cust.customerName.toLowerCase().includes(query);
         const inMkt = Array.from(cust.marketings).some(m => m.toLowerCase().includes(query));
-        return inName || inMkt;
+        const inCa = Array.from(cust.cas).some(ca => ca.toLowerCase().includes(query));
+        return inName || inMkt || inCa;
       });
 
       badgeEl.textContent = `${filtered.length} Customer`;
@@ -1110,6 +1112,7 @@
 
       filtered.forEach(cust => {
         const marketingList = Array.from(cust.marketings).join(', ') || '-';
+        const caList = Array.from(cust.cas).join(', ') || '-';
         const tr = document.createElement('tr');
         tr.className = 'hover:bg-emerald-50/50 transition cursor-pointer';
         tr.title = 'Klik untuk mencari & membuka detail kontrak customer ini di tabel utama';
@@ -1131,6 +1134,7 @@
               ${cust.hasRepoHistory ? '<span class="px-1.5 py-0.5 rounded text-[9px] font-bold bg-rose-100 text-rose-800">RP</span>' : ''}
             </div>
             <div class="text-[11px] text-slate-500">AO: ${escapeHtml(marketingList)}</div>
+            <div class="text-[11px] text-slate-500">CA: ${escapeHtml(caList)}</div>
           </td>
           <td class="py-3 px-3 text-center font-semibold text-slate-700 tabular-nums">
             ${cust.contracts.length} Unit
@@ -1213,6 +1217,7 @@
         return ct.customerName.toLowerCase().includes(query) ||
                ct.noKontrak.toLowerCase().includes(query) ||
                ct.marketing.toLowerCase().includes(query) ||
+               ct.ca.toLowerCase().includes(query) ||
                ct.btm.toLowerCase().includes(query);
       });
 
@@ -1254,8 +1259,9 @@
           <td class="py-3 px-3">
             ${getKolBadge(ct.ovdDays)}
           </td>
-          <td class="py-3 px-3 font-medium text-slate-700">
-            ${escapeHtml(ct.marketing)}
+          <td class="py-3 px-3">
+            <div class="font-medium text-slate-800">AO: ${escapeHtml(ct.marketing)}</div>
+            <div class="text-[11px] text-slate-500">CA: ${escapeHtml(ct.ca)}</div>
           </td>
           <td class="py-3 pl-3 pr-6 text-right font-bold text-rose-800 tabular-nums whitespace-nowrap">
             ${formatIDR(ct.afOut)}
@@ -1352,6 +1358,7 @@
 
         const isHighProspect = avgProgressPct >= 70 && !cust.hasRepoHistory && cust.globalMaxOvd < 60;
         const marketingList = Array.from(cust.marketings).join(', ') || '-';
+        const caList = Array.from(cust.cas).join(', ') || '-';
         const hasOtherStatusContracts = cust.totalAllContracts > cust.contracts.length;
 
         const mainTr = document.createElement('tr');
@@ -1381,8 +1388,9 @@
                   ${cust.hasRepoHistory ? `<span class="text-[10px] font-bold bg-rose-100 text-rose-800 px-1.5 py-0.5 rounded border border-rose-200">Pernah RP</span>` : ''}
                   ${isHighProspect ? `<span class="text-[11px] font-semibold bg-emerald-50 text-emerald-700 px-2 py-0.5 rounded-md border border-emerald-200">Siap Top-Up</span>` : ''}
                 </div>
-                <div class="text-xs text-slate-500 mt-0.5">
-                  AO: <span class="font-medium text-slate-700">${escapeHtml(marketingList)}</span>
+                <div class="text-xs text-slate-500 mt-1 space-y-0.5">
+                  <div>AO: <span class="font-medium text-slate-700">${escapeHtml(marketingList)}</span></div>
+                  <div>CA: <span class="font-medium text-slate-700">${escapeHtml(caList)}</span></div>
                 </div>
               </div>
             </div>
@@ -1449,8 +1457,9 @@
                 </div>
                 <div class="text-[10px] text-slate-500 mt-0.5">Sisa tenor: <strong class="text-slate-700">${sisaTenor} bln</strong> • OVD Berjalan: ${ct.ovdDays} hr • Max OVD: ${ct.maxOvd} hr</div>
               </td>
-              <td class="py-2.5 px-3 font-medium text-slate-800">
-                ${escapeHtml(ct.marketing)}
+              <td class="py-2.5 px-3">
+                <div class="font-medium text-slate-800">AO: ${escapeHtml(ct.marketing)}</div>
+                <div class="text-[11px] text-slate-500">CA: ${escapeHtml(ct.ca)}</div>
               </td>
               <td class="py-2.5 px-3 text-slate-700">
                 ${escapeHtml(ct.supplier)}
@@ -1475,8 +1484,13 @@
                   </div>
                   <span class="text-slate-600">|</span>
                   <div>
-                    <span class="text-slate-400">Marketing (AO):</span>
+                    <span class="text-slate-400">AO:</span>
                     <span class="font-semibold ml-1">${escapeHtml(marketingList)}</span>
+                  </div>
+                  <span class="text-slate-600">|</span>
+                  <div>
+                    <span class="text-slate-400">CA:</span>
+                    <span class="font-semibold ml-1">${escapeHtml(caList)}</span>
                   </div>
                   <span class="text-slate-600">|</span>
                   <div>
@@ -1505,7 +1519,7 @@
                       <th class="py-2.5 px-3">No. Kontrak &amp; Status</th>
                       <th class="py-2.5 px-3">Brand / BTM</th>
                       <th class="py-2.5 px-3 w-52">Tenor Berjalan</th>
-                      <th class="py-2.5 px-3">Nama Marketing (AO)</th>
+                      <th class="py-2.5 px-3">Nama AO &amp; CA</th>
                       <th class="py-2.5 px-3">Nama Supplier</th>
                       <th class="py-2.5 px-3 text-right">AF Kontrak &amp; Out</th>
                     </tr>
@@ -1561,6 +1575,7 @@
 
       const tier = OVD_TIERS[selectedOvdTierKey];
       const marketingList = Array.from(cust.marketings).join(', ') || '-';
+      const caList = Array.from(cust.cas).join(', ') || '-';
       const lines = [
         `*RINGKASAN CUSTOMER (${tier.label} • ${tier.rangeText})*`,
         `Customer: *${cust.customerName}* (Rank #${cust.actualRank})`,
@@ -1569,6 +1584,7 @@
         `Total AF Kontrak: ${formatIDR(cust.totalAfKontrak)}`,
         `Total AF Outstanding: ${formatIDR(cust.totalAfOut)}`,
         `Marketing (AO): ${marketingList}`,
+        `Credit Analyst (CA): ${caList}`,
         ``,
         `*Rincian Unit & Tenor:*`
       ];
